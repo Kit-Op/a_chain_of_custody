@@ -1,0 +1,845 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Innsyn i materiale</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  /* Layout: same stepped public-sector form as the other two (header band, segmented progress, one card per step); the new parts are the whitelist-gated recipient step and a single-package drop zone that rejects a second copy. */
+  :root {
+    --bg: #efefef;
+    --surface: #ffffff;
+    --ink: #1e2b3c;
+    --muted: #546275;
+    --line: #c9d1da;
+    --field: #1e2b3c;
+    --primary: #0062ba;
+    --primary-hover: #004f95;
+    --primary-ink: #ffffff;
+    --header: #022f51;
+    --header-ink: #ffffff;
+    --err: #b3122a;
+    --err-soft: #fbe8eb;
+    --ok: #146534;
+    --ok-soft: #d3f2d9;
+    --info-soft: #e6f0f9;
+    --warn-soft: #fff4d6;
+    --warn-bar: #d99a00;
+    --focus: #0062ba;
+    --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1722; --surface: #172331; --ink: #e8eef5; --muted: #9db0c3; --line: #33465a; --field: #9db0c3;
+      --primary: #4aa3f0; --primary-hover: #7cbcf5; --primary-ink: #04172a; --header: #0a1a2b; --header-ink: #e8eef5;
+      --err: #ff8a98; --err-soft: #3b1a20; --ok: #86dc9f; --ok-soft: #17331f; --info-soft: #1b3045;
+      --warn-soft: #3a2f10; --warn-bar: #e0a800; --focus: #7cbcf5;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1722; --surface: #172331; --ink: #e8eef5; --muted: #9db0c3; --line: #33465a; --field: #9db0c3;
+    --primary: #4aa3f0; --primary-hover: #7cbcf5; --primary-ink: #04172a; --header: #0a1a2b; --header-ink: #e8eef5;
+    --err: #ff8a98; --err-soft: #3b1a20; --ok: #86dc9f; --ok-soft: #17331f; --info-soft: #1b3045;
+    --warn-soft: #3a2f10; --warn-bar: #e0a800; --focus: #7cbcf5;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--font); }
+  h1, h2, h3, p, ul, dl, dd { margin: 0; }
+  .in { max-width: 792px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .mono { font-family: var(--mono); }
+
+  .top { background: var(--header); color: var(--header-ink); }
+  .top .in { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-block: 14px; }
+  .top .org { font-weight: 700; font-size: 17px; }
+  .top .tag { font-size: 14px; opacity: .85; }
+
+  .page { padding-block: 24px 56px; display: flex; flex-direction: column; gap: 20px; }
+  .head { display: flex; flex-direction: column; gap: 10px; }
+  #progress { display: flex; gap: 5px; }
+  .seg { flex: 1; min-width: 0; height: 20px; padding: 0; border: 0; background: none; display: flex; align-items: center; cursor: pointer; border-radius: 0; min-height: 0; }
+  .seg:hover { background: none; }
+  .seg i { display: block; width: 100%; height: 6px; border-radius: 3px; background: var(--line); }
+  .seg[data-s="done"] i { background: var(--primary); }
+  .seg[data-s="cur"] i { background: var(--primary); height: 10px; }
+  .seg:disabled { cursor: not-allowed; }
+  .eyebrow { font-size: 14px; color: var(--muted); font-weight: 500; }
+  h1 { font-size: clamp(26px, 5.5vw, 34px); line-height: 1.15; font-weight: 700; letter-spacing: -0.015em; text-wrap: balance; }
+  h1:focus { outline: none; }
+  .lede { color: var(--muted); max-width: 64ch; }
+
+  .col { display: flex; flex-direction: column; gap: 20px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 28px; }
+  @media (max-width: 560px) { .card { padding: 20px 16px; } }
+  .step { display: flex; flex-direction: column; gap: 22px; }
+  h2 { font-size: 20px; line-height: 1.25; font-weight: 700; }
+
+  .meta { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 14px; color: var(--muted); padding-top: 16px; border-top: 1px solid var(--line); }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .two > .err { grid-column: 1 / -1; margin-top: 0; }
+  @media (max-width: 560px) { .two { grid-template-columns: 1fr; } }
+  .f { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  label.lab, .f > label, legend { font-weight: 600; font-size: 16px; }
+  legend { padding: 0; margin-bottom: 6px; }
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+  .opt { font-weight: 400; color: var(--muted); }
+  .req { color: var(--err); }
+  .hint { font-size: 14px; color: var(--muted); max-width: 66ch; }
+  input[type="text"], input[type="date"], input[type="number"], select, textarea {
+    width: 100%; font: 400 16px/1.3 var(--font); color: var(--ink); background: var(--surface);
+    border: 1px solid var(--field); border-radius: 4px; padding: 10px 12px; min-height: 46px; min-width: 0;
+  }
+  textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
+  input.mono { font-family: var(--mono); font-size: 14.5px; }
+  input:hover, select:hover, textarea:hover { box-shadow: 0 0 0 1px var(--field); }
+  input::placeholder, textarea::placeholder { color: var(--muted); opacity: .8; }
+  [aria-invalid="true"] { border-color: var(--err); box-shadow: 0 0 0 1px var(--err); background: var(--err-soft); }
+
+  .choice { display: flex; align-items: flex-start; gap: 12px; padding: 11px 14px; border: 1px solid var(--field); border-radius: 4px; cursor: pointer; background: var(--surface); }
+  .choice:hover { background: var(--info-soft); }
+  .choice:has(input:checked) { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); background: var(--info-soft); }
+  .choice:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .choice input { flex: none; width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--primary); cursor: pointer; }
+  .choice small { display: block; color: var(--muted); font-size: 14px; }
+  .inline { display: flex; gap: 10px; flex-wrap: wrap; }
+  .inline .choice { flex: 1; min-width: 150px; }
+  .confirm .choice:has(input:checked), .rule .choice:has(input:checked) { border-color: var(--ok); box-shadow: 0 0 0 1px var(--ok); background: var(--ok-soft); }
+
+  .note, .warn { padding: 12px 16px; border-radius: 0 4px 4px 0; font-size: 15px; }
+  .note { background: var(--info-soft); border-left: 4px solid var(--primary); }
+  .warn { background: var(--warn-soft); border-left: 4px solid var(--warn-bar); }
+  .cond { display: flex; flex-direction: column; gap: 22px; padding-top: 22px; border-top: 2px dashed var(--line); }
+  .cond.plain { border-top: 0; padding-top: 0; }
+  .group { display: flex; flex-direction: column; gap: 6px; }
+
+  .err { display: flex; gap: 6px; color: var(--err); font-weight: 600; font-size: 14px; margin-top: 2px; }
+  .err::before { content: "!"; flex: none; width: 18px; height: 18px; border-radius: 50%; background: var(--err); color: var(--surface); font-size: 12px; line-height: 18px; text-align: center; }
+  .errsum { border: 2px solid var(--err); background: var(--err-soft); border-radius: 4px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .errsum:focus { outline: none; }
+  .errsum h2 { font-size: 18px; color: var(--err); }
+  .errsum ul { padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+  .errsum a { color: var(--err); font-weight: 500; }
+
+  /* file drop zone */
+  .dz { display: flex; flex-direction: column; gap: 10px; }
+  .dz-box { border: 2px dashed var(--field); border-radius: 6px; background: var(--info-soft); padding: 26px 18px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; cursor: pointer; }
+  .dz-box:hover, .dz.over .dz-box { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 3px var(--primary); }
+  .dz-box svg { width: 34px; height: 34px; color: var(--primary); }
+  .dz-box b { font-weight: 600; }
+  .dz-box u { color: var(--primary); text-underline-offset: 3px; font-weight: 600; }
+  .dz.full .dz-box { opacity: .55; cursor: not-allowed; border-style: solid; }
+  .files { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .files li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; }
+  .files .fname { font-weight: 600; overflow-wrap: anywhere; }
+  .files .meta2 { grid-column: 1; font-size: 14px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; }
+  .files .okf { color: var(--ok); font-weight: 600; }
+  .files .del { grid-column: 2; grid-row: 1 / span 2; }
+  .dz-err { display: flex; flex-direction: column; gap: 4px; }
+  .idbox { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; border: 1px solid var(--line); border-radius: 4px; padding: 10px 14px; }
+  .idbox span:first-child { font-weight: 600; }
+
+  button { font: 600 16px/1.2 var(--font); border-radius: 4px; padding: 12px 22px; min-height: 46px; cursor: pointer; border: 2px solid var(--primary); background: var(--primary); color: var(--primary-ink); }
+  button:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+  button.ghost { background: transparent; color: var(--primary); }
+  button.ghost:hover { background: var(--info-soft); }
+  button.del { min-height: 0; padding: 6px 12px; font-size: 14px; }
+  button.link { background: none; border: 0; padding: 4px 2px; min-height: 0; color: var(--primary); text-decoration: underline; text-underline-offset: 3px; font-size: 15px; }
+  button.link:hover { background: none; color: var(--primary-hover); }
+  button.link[data-armed="1"] { color: var(--err); }
+  .nav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .nav .spacer { flex: 1; }
+  .btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* summary and receipt */
+  .sumblock { display: flex; flex-direction: column; gap: 8px; }
+  .sumblock + .sumblock { margin-top: 10px; }
+  .sumhead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  dl.sum { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); border-top: 1px solid var(--line); }
+  dl.sum dt, dl.sum dd { padding: 9px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+  dl.sum dt { color: var(--muted); padding-right: 12px; }
+  dl.sum dd { font-weight: 500; white-space: pre-line; }
+  @media (max-width: 560px) { dl.sum { grid-template-columns: 1fr; } dl.sum dt { border-bottom: 0; padding-bottom: 0; } }
+  .receipt-box { background: var(--ok-soft); color: var(--ok); border-radius: 6px; padding: 22px; display: flex; flex-direction: column; gap: 8px; }
+  .receipt-box h2 { font-size: 24px; }
+  .receipt-box .ref { font: 600 16px/1.3 var(--mono); color: var(--ink); }
+  textarea.fb { min-height: 160px; font: 400 13px/1.5 var(--mono); }
+  .toast { font-size: 14px; color: var(--muted); min-height: 1.3em; }
+  footer { font-size: 14px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+</style>
+
+<header class="top"><div class="in"><span class="org">Vestland fylkeskommune</span><span class="tag">Innsyn i materiale</span></div></header>
+
+<main class="in page">
+  <div class="head">
+    <nav aria-label="Framdrift" id="progress"></nav>
+    <p class="eyebrow" id="eyebrow"></p>
+    <h1 id="h1" tabindex="-1"></h1>
+    <p class="lede" id="sub"></p>
+  </div>
+
+  <div class="note" id="reviewnote"><span id="rn_txt"></span> <button type="button" class="link" id="rn_btn"></button></div>
+
+  <form id="skjema" novalidate autocomplete="off">
+    <div class="col">
+      <div class="card"><div id="steps">
+
+        <!-- 1 Førespurnad -->
+        <section class="step" data-step="0">
+          <p class="lede">Skjemaet dokumenterer ei førespurnad om innsyn og følgjer materialet til ein namngjeven mottakar. Førespurnaden skal journalførast i systema til Vestland fylkeskommune. Materialet sjølv blir ikkje lagra som ekstra kopi, og blir berre sendt til ein godkjend organisasjon. Felt merkte med <span class="req">*</span> må fyllast ut.</p>
+          <div class="meta">
+            <span><b>Skjemaversjon:</b> 1.0 (prototype)</span>
+            <span><b>Pakke-ID:</b> <span class="mono" id="refnr">–</span></span>
+          </div>
+
+          <div class="two">
+            <div class="f"><label for="dato_motteke">Dato motteke <span class="req">*</span></label><input type="date" id="dato_motteke"></div>
+            <div class="f">
+              <label for="kanal">Korleis kom førespurnaden inn? <span class="req">*</span></label>
+              <select id="kanal">
+                <option value="">Vel …</option>
+                <option value="epost">E-post</option>
+                <option value="brev">Brev</option>
+                <option value="skjema">Nettskjema eller innsynsportal</option>
+                <option value="telefon">Telefon</option>
+                <option value="anna">Anna</option>
+              </select>
+            </div>
+          </div>
+          <div class="f"><label for="fraa">Kven bed om innsyn? <span class="req">*</span></label><p class="hint">Namn på person eller organisasjon som sende førespurnaden.</p><input type="text" id="fraa"></div>
+
+          <div class="f">
+            <label for="grunnlag">Grunnlag for innsyn <span class="req">*</span></label>
+            <select id="grunnlag">
+              <option value="">Vel …</option>
+              <option value="offl">Offentleglova</option>
+              <option value="fvl">Forvaltningslova (partsinnsyn)</option>
+              <option value="gdpr">Personvernforordninga art. 15 (innsyn i eigne opplysningar)</option>
+              <option value="anna">Anna rettsgrunnlag</option>
+            </select>
+          </div>
+          <div class="f cond plain" id="c-grunnlag-anna" hidden>
+            <label for="grunnlag_anna">Oppgi rettsgrunnlaget <span class="req">*</span></label>
+            <input type="text" id="grunnlag_anna">
+          </div>
+
+          <div class="f"><label for="onske">Kva blir det bedt om innsyn i? <span class="req">*</span></label><textarea id="onske"></textarea></div>
+
+          <div class="group">
+            <div class="f"><label for="ref_vlfk">Sak- eller journalpostreferanse <span class="req">*</span></label><p class="hint">Referanse til førespurnaden i sak-/arkivsystemet til Vestland fylkeskommune.</p><input type="text" id="ref_vlfk" class="mono"></div>
+          </div>
+          <label class="choice" id="l_journalfort"><input type="checkbox" name="journalfort" value="ja"><span>Førespurnaden er journalført i sak-/arkivsystemet til Vestland fylkeskommune <span class="req">*</span><small>Alle førespurnader om innsyn skal dokumenterast der, uavhengig av kven som sender materialet.</small></span></label>
+        </section>
+
+        <!-- 2 Materialet -->
+        <section class="step" data-step="1" hidden>
+          <div class="f"><label for="holder">Kven har materialet? <span class="req">*</span></label><p class="hint">Arkivskapar eller eining som oppbevarer materialet, til dømes ein kommune eller ei avdeling.</p><input type="text" id="holder"></div>
+          <div class="two">
+            <div class="f"><label for="periode_fra">Tidsrom frå <span class="opt">(valfri)</span></label><input type="date" id="periode_fra"></div>
+            <div class="f"><label for="periode_til">Tidsrom til <span class="opt">(valfri)</span></label><input type="date" id="periode_til"></div>
+          </div>
+          <fieldset>
+            <legend>Type materiale <span class="req">*</span></legend>
+            <label class="choice"><input type="radio" name="matype" value="digitalt"><span>Digitalt<small>Funne i system eller arkiv og trekt ut digitalt</small></span></label>
+            <label class="choice"><input type="radio" name="matype" value="papir"><span>Papir<small>Blir skanna før utsending</small></span></label>
+            <label class="choice"><input type="radio" name="matype" value="begge"><span>Både digitalt og papir</span></label>
+          </fieldset>
+          <label class="choice" id="c-skan" hidden><input type="checkbox" name="skan_ok" value="ja"><span>Skanna materiale er kontrollert<small>Sidene er lesbare og komplette, og rekkjefølgja er riktig.</small></span></label>
+
+          <div class="two">
+            <div class="f"><label for="prep_by">Førebudd av <span class="req">*</span></label><p class="hint">Personen som fann, skanna og førebudde materialet.</p><input type="text" id="prep_by"></div>
+            <div class="f"><label for="prep_org">Organisasjon <span class="opt">(valfri)</span></label><p class="hint">Til dømes kommune eller KAV.</p><input type="text" id="prep_org"></div>
+          </div>
+          <div class="f"><label for="prep_skildring">Korleis er materialet funne og førebudd? <span class="opt">(valfri)</span></label><p class="hint">Søk, utval, skanning, konvertering.</p><textarea id="prep_skildring"></textarea></div>
+          <div class="f" style="max-width:280px"><label for="antal">Omtrentleg tal på dokument <span class="opt">(valfri)</span></label><input type="number" id="antal" min="0" inputmode="numeric"></div>
+        </section>
+
+        <!-- 3 Sensitivitet og unntak -->
+        <section class="step" data-step="2" hidden>
+          <div class="warn">Sensitivt materiale skal berre til den namngjevne mottakaren i steg 4. Gjer vurderinga av unntak før materialet blir pakka.</div>
+          <fieldset>
+            <legend>Sikkerheitsnivå <span class="req">*</span></legend>
+            <label class="choice"><input type="radio" name="nivaa" value="open"><span>Ope materiale<small>Ingen sensitive opplysningar</small></span></label>
+            <label class="choice"><input type="radio" name="nivaa" value="personopp"><span>Inneheld personopplysningar<small>Vanlege personopplysningar utan særskilt vern</small></span></label>
+            <label class="choice"><input type="radio" name="nivaa" value="sarleg"><span>Sensitivt<small>Helse, barnevern, teieplikt eller særlege kategoriar av personopplysningar</small></span></label>
+            <label class="choice"><input type="radio" name="nivaa" value="gradert"><span>Gradert<small>Materialet er sikkerheitsgradert</small></span></label>
+          </fieldset>
+
+          <div class="cond" id="c-sens" hidden>
+            <label class="choice"><input type="checkbox" name="unntak" value="ja"><span>Unntak frå innsyn er vurderte <span class="req">*</span><small>Opplysningar som ikkje skal utleverast er fjerna eller sladda.</small></span></label>
+            <div class="f"><label for="grunnlag_utlevering">Kva er sladda eller fjerna, og kva er grunnlaget for å gi innsyn? <span class="req">*</span></label><textarea id="grunnlag_utlevering"></textarea></div>
+          </div>
+
+          <div class="two">
+            <div class="f"><label for="vurd_namn">Vurdert av <span class="req">*</span></label><input type="text" id="vurd_namn"></div>
+            <div class="f"><label for="vurd_dato">Dato for vurdering <span class="req">*</span></label><input type="date" id="vurd_dato"></div>
+          </div>
+        </section>
+
+        <!-- 4 Mottakar -->
+        <section class="step" data-step="3" hidden>
+          <div class="f">
+            <label for="mottakar_org">Mottakarorganisasjon <span class="req">*</span></label>
+            <p class="hint">Materialet kan berre sendast til organisasjonar på godkjend mottakarliste. Lista i prototypen er eit døme.</p>
+            <select id="mottakar_org">
+              <option value="">Vel …</option>
+              <optgroup label="Godkjend mottakarliste (døme)">
+                <option value="sf_kav">Sogn og Fjordane-kommunar (via KAV)</option>
+              </optgroup>
+              <optgroup label="Ikkje på lista">
+                <option value="annan">Annan organisasjon</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="note" id="wl_info" hidden></div>
+          <div class="warn" id="wl_warn" hidden>Denne organisasjonen er ikkje på godkjend mottakarliste. Materialet kan ikkje sendast før organisasjonen er godkjend. Be om godkjenning, og kom tilbake til skjemaet.</div>
+
+          <div class="f"><label for="m_eining">Kommune eller eining hos mottakaren <span class="req">*</span></label><input type="text" id="m_eining"></div>
+
+          <div class="group">
+            <h2>Namngjeven mottakar</h2>
+            <p class="hint">Materialet skal til éin bestemt person. Sensitive opplysningar blir ikkje sendt til ein felles postkasse.</p>
+          </div>
+          <div class="two">
+            <div class="f"><label for="m_namn">Namn <span class="req">*</span></label><input type="text" id="m_namn" autocomplete="off"></div>
+            <div class="f"><label for="m_stilling">Stilling <span class="req">*</span></label><input type="text" id="m_stilling"></div>
+          </div>
+          <div class="two">
+            <div class="f"><label for="m_epost">E-post <span class="req">*</span></label><input type="text" id="m_epost" inputmode="email"></div>
+            <div class="f"><label for="m_telefon">Telefon <span class="opt">(valfri)</span></label><input type="text" id="m_telefon" inputmode="tel"></div>
+          </div>
+          <label class="choice"><input type="checkbox" name="m_kontrollert" value="ja"><span>Identiteten og stillinga til mottakaren er kontrollerte <span class="req">*</span></span></label>
+          <div class="f"><label for="m_kontroll_korleis">Korleis er identiteten kontrollert? <span class="req">*</span></label><p class="hint">Til dømes tilbakeringing til sentralbord eller stadfesting frå kommunen.</p><input type="text" id="m_kontroll_korleis"></div>
+        </section>
+
+        <!-- 5 Pakke og sending -->
+        <section class="step" data-step="4" hidden>
+          <div class="note">Éi pakke, éin mottakar. Pakka skal ikkje kopierast, mellomlagrast eller sendast til fleire stader.</div>
+
+          <div class="idbox"><span>Pakke-ID</span><span class="mono" id="pkg_id"></span></div>
+
+          <div class="dz" id="dz_pkg" data-zone="pkg">
+            <span class="lab">Pakke med materialet <span class="req">*</span></span>
+            <span class="hint">Alt materialet samla i éi pakke. Det kan berre leggjast ved éi fil.</span>
+            <div class="dz-box" role="button" tabindex="0" aria-label="Dra og slepp pakka her, eller vel fil">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5V8ZM3 8l9 5 9-5M12 13v8"/></svg>
+              <span><b>Dra og slepp pakka her</b> eller <u>vel fil</u></span>
+              <span class="hint">ZIP, 7Z, TAR, GZ, TGZ eller PDF. Maks 5 GB.</span>
+            </div>
+            <input type="file" hidden accept=".zip,.7z,.tar,.gz,.tgz,.pdf">
+            <div class="dz-err" role="alert"></div>
+            <ul class="files" aria-label="Pakke"></ul>
+            <p class="hint">Prototype: fila blir ikkje lasta opp nokon stad. Berre filnamn og storleik blir viste.</p>
+          </div>
+
+          <div class="f"><label for="p_hash">Kontrollsum (SHA-256) <span class="opt">(valfri)</span></label><p class="hint">Mottakaren kan bruke den til å sjekke at pakka er uendra.</p><input type="text" id="p_hash" class="mono" spellcheck="false"></div>
+
+          <fieldset class="rule">
+            <legend>Sikring og ingen kopiar</legend>
+            <label class="choice"><input type="checkbox" name="k_krypt" value="ja"><span>Pakka er kryptert, og nøkkelen blir sendt til mottakaren på ein annan måte enn pakka <span class="req">*</span></span></label>
+            <label class="choice"><input type="checkbox" name="k_kanal" value="ja"><span>Pakka blir berre sendt via godkjend sendekanal for mottakaren <span class="req">*</span></span></label>
+            <label class="choice"><input type="checkbox" name="k_ingen_andre" value="ja"><span>Materialet er ikkje sendt til andre mottakarar, og det finst ingen parallelle pakker <span class="req">*</span></span></label>
+            <label class="choice"><input type="checkbox" name="k_ingen_kopi" value="ja"><span>Eg lagrar ingen kopi av materialet etter utsending<small>Ikkje i e-post, mellomlagring eller lokale mapper.</small> <span class="req">*</span></span></label>
+          </fieldset>
+          <div class="f" style="max-width:300px"><label for="slett_dato">Dato for sletting av mellomlagra filer <span class="req">*</span></label><input type="date" id="slett_dato"></div>
+        </section>
+
+        <!-- 6 Avsendar og stadfesting -->
+        <section class="step" data-step="5" hidden>
+          <div class="two">
+            <div class="f"><label for="av_org">Avsendar (organisasjon) <span class="req">*</span></label><input type="text" id="av_org" list="l-avsendar"><datalist id="l-avsendar"><option value="Vestland fylkeskommune"></option><option value="KAV"></option></datalist></div>
+            <div class="f"><label for="av_namn">Namn <span class="req">*</span></label><input type="text" id="av_namn" autocomplete="name"></div>
+            <div class="f"><label for="av_rolle">Rolle / stilling <span class="req">*</span></label><input type="text" id="av_rolle"></div>
+            <div class="f"><label for="av_epost">E-post <span class="req">*</span></label><input type="text" id="av_epost" autocomplete="email" inputmode="email"></div>
+          </div>
+          <div class="two">
+            <div class="f"><label for="jp_utsending">Journalpostreferanse for utsendinga <span class="req">*</span></label><p class="hint">Utsendinga skal dokumenterast i systema til Vestland fylkeskommune.</p><input type="text" id="jp_utsending" class="mono"></div>
+            <div class="f"><label for="dato_utsending">Dato for utsending <span class="req">*</span></label><input type="date" id="dato_utsending"></div>
+          </div>
+          <fieldset class="confirm" id="stadfest_fs">
+            <legend>Stadfesting frå avsendar <span class="req">*</span></legend>
+            <label class="choice"><input type="checkbox" name="stadfest_mottakar" value="ja"><span>Mottakaren står på godkjend mottakarliste og er rett person for dette materialet.</span></label>
+            <label class="choice"><input type="checkbox" name="stadfest_dok" value="ja"><span>Førespurnaden og utsendinga er dokumenterte i systema til Vestland fylkeskommune.</span></label>
+            <label class="choice"><input type="checkbox" name="stadfest_ingenny" value="ja"><span>Eg er innforstått med at pakka ikkje kan sendast på nytt eller kopierast utan ei ny førespurnad.</span></label>
+          </fieldset>
+        </section>
+
+        <!-- 7 Oppsummering -->
+        <section class="step" data-step="6" hidden>
+          <p class="lede">Kontroller opplysningane før du sender inn. Bruk «Endre» for å gå tilbake til eit steg.</p>
+          <div id="summary"></div>
+        </section>
+
+        <!-- Kvittering -->
+        <section class="step" data-step="7" hidden>
+          <div class="receipt-box" role="status">
+            <h2>Skjemaet er ferdig utfylt</h2>
+            <p id="rc_msg"></p>
+            <p class="ref" id="rc_ref"></p>
+            <p id="rc_time"></p>
+          </div>
+          <div id="rc_sum"></div>
+          <p class="note">Dette er ein prototype. Ingenting er sendt til mottakaren, og ingenting er lagra i systema til Vestland fylkeskommune. Kopier oppsummeringa og legg henne ved saka.</p>
+          <div class="btns">
+            <button type="button" id="copy_txt">Kopier oppsummering</button>
+            <button type="button" class="ghost" id="copy_json">Kopier som JSON</button>
+            <button type="button" class="ghost" id="restart">Start nytt skjema</button>
+          </div>
+          <p class="toast" id="toast" role="status"></p>
+          <textarea id="fallback" class="fb" readonly hidden aria-label="Tekst som skal kopierast"></textarea>
+        </section>
+
+      </div></div>
+
+      <div class="nav" id="nav">
+        <button type="button" class="ghost" id="back">Tilbake</button>
+        <span class="spacer"></span>
+        <button type="button" id="next">Neste</button>
+      </div>
+    </div>
+  </form>
+
+  <footer id="foot"><span>Utfylte opplysningar blir berre lagra i denne nettlesaren.</span><button type="button" class="link" id="reset">Tøm skjemaet</button></footer>
+</main>
+
+<script>
+(function () {
+  var KEY = "vlfk-innsyn-v1";
+  var form = document.getElementById("skjema");
+  var $ = function (id) { return document.getElementById(id); };
+  var fields = [].slice.call(form.querySelectorAll("input:not([type=file]), select, textarea"));
+
+  var STEPS = [
+    { s: "Førespurnad", sub: "Kven bed om innsyn, og kvar er førespurnaden dokumentert" },
+    { s: "Materialet", sub: "Kven har det, og korleis er det funne og førebudd" },
+    { s: "Sensitivitet og unntak", sub: "Sikkerheitsnivå og vurdering av unntak frå innsyn" },
+    { s: "Mottakar", sub: "Godkjend organisasjon og namngjeven person" },
+    { s: "Pakke og sending", sub: "Éi pakke, ingen kopiar" },
+    { s: "Avsendar og stadfesting", sub: "Kven sender, og kvar er utsendinga dokumentert" },
+    { s: "Oppsummering", sub: "" }
+  ];
+  var LAST = STEPS.length - 1;
+  var WL = { sf_kav: { name: "Sogn og Fjordane-kommunar", channel: "KAV" } };
+  var MAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var ZONES = { pkg: { accept: [".zip", ".7z", ".tar", ".gz", ".tgz", ".pdf"], max: 5 * 1073741824, limit: "5 GB", one: true } };
+  var ALIAS = { stadfest_ingenny: "stadfest_mottakar", stadfest_dok: "stadfest_mottakar" };
+  var files = { pkg: [] };
+  var ENFORCE = false; /* false = gjennomgangsmodus: obligatoriske felt blir ikkje kontrollerte */
+  var step = 0, reached = 0, ref = "";
+
+  function isChk(e) { return e.type === "checkbox" || e.type === "radio"; }
+  function fkey(e) { return e.type === "radio" ? e.name + "=" + e.value : e.type === "checkbox" ? e.name : e.id; }
+  function val(n) { var e = form.querySelector('[name="' + n + '"]:checked'); return e ? e.value : ""; }
+  function txt(id) { return $(id).value.trim(); }
+  function chk(n) { return form.elements[n].checked; }
+  function choiceText(n) { var e = form.querySelector('[name="' + n + '"]:checked'); return e ? e.closest("label").querySelector("span").firstChild.textContent.trim() : ""; }
+  function selText(id) { var s = $(id); return s.value ? s.options[s.selectedIndex].text : ""; }
+  function fmtSize(b) {
+    var u = ["byte", "KB", "MB", "GB"], i = 0, n = b;
+    while (n >= 1024 && i < 3) { n /= 1024; i++; }
+    return n.toLocaleString("nb-NO", { maximumFractionDigits: i === 0 ? 0 : 1 }) + " " + u[i];
+  }
+  function newRef() {
+    var d = new Date(), p = function (n) { return String(n).padStart(2, "0"); };
+    return "INN-" + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + "-" + Math.random().toString(36).slice(2, 6).toUpperCase();
+  }
+
+  /* ---------- conditional blocks ---------- */
+  function refresh() {
+    $("c-grunnlag-anna").hidden = $("grunnlag").value !== "anna";
+    $("c-skan").hidden = !(val("matype") === "papir" || val("matype") === "begge");
+    $("c-sens").hidden = !(val("nivaa") && val("nivaa") !== "open");
+    var m = $("mottakar_org").value, w = WL[m];
+    $("wl_info").hidden = !w;
+    if (w) $("wl_info").textContent = "Godkjend mottakar. Sendekanal: via " + w.channel + ".";
+    $("wl_warn").hidden = m !== "annan";
+    $("pkg_id").textContent = ref;
+    $("dz_pkg").classList.toggle("full", files.pkg.length >= 1);
+  }
+
+  /* ---------- persistence ---------- */
+  function save() {
+    try {
+      var v = {};
+      fields.forEach(function (e) { v[fkey(e)] = isChk(e) ? e.checked : e.value; });
+      localStorage.setItem(KEY, JSON.stringify({ v: v, files: files, step: step, reached: reached, ref: ref }));
+    } catch (err) {}
+  }
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY); if (!raw) return;
+      var o = JSON.parse(raw);
+      fields.forEach(function (e) { var k = fkey(e); if (!o.v || !(k in o.v)) return; if (isChk(e)) e.checked = !!o.v[k]; else e.value = o.v[k]; });
+      if (o.files) files.pkg = o.files.pkg || [];
+      ref = o.ref || ""; reached = Math.min(+o.reached || 0, LAST); step = Math.min(+o.step || 0, reached);
+    } catch (err) {}
+  }
+
+  /* ---------- validation ---------- */
+  var VAL = [
+    function (a) {
+      if (!$("dato_motteke").value) a("dato_motteke", "Dato motteke", "Velg ein dato.");
+      if (!$("kanal").value) a("kanal", "Korleis kom førespurnaden inn", "Vel eitt alternativ.");
+      if (!txt("fraa")) a("fraa", "Kven bed om innsyn", "Fyll ut dette feltet.");
+      if (!$("grunnlag").value) a("grunnlag", "Grunnlag for innsyn", "Vel eitt alternativ.");
+      if ($("grunnlag").value === "anna" && !txt("grunnlag_anna")) a("grunnlag_anna", "Rettsgrunnlag", "Oppgi rettsgrunnlaget.");
+      if (!txt("onske")) a("onske", "Kva det blir bedt om innsyn i", "Fyll ut dette feltet.");
+      if (!txt("ref_vlfk")) a("ref_vlfk", "Sak- eller journalpostreferanse", "Oppgi referansen frå sak-/arkivsystemet.");
+      if (!chk("journalfort")) a("journalfort", "Førespurnaden er journalført", "Førespurnaden må vere journalført i systema til Vestland fylkeskommune.");
+    },
+    function (a) {
+      if (!txt("holder")) a("holder", "Kven har materialet", "Fyll ut dette feltet.");
+      if (!val("matype")) a("matype", "Type materiale", "Vel type materiale.");
+      if (!txt("prep_by")) a("prep_by", "Førebudd av", "Fyll ut dette feltet.");
+    },
+    function (a) {
+      if (!val("nivaa")) a("nivaa", "Sikkerheitsnivå", "Vel sikkerheitsnivå.");
+      if (val("nivaa") && val("nivaa") !== "open") {
+        if (!chk("unntak")) a("unntak", "Unntak er vurderte", "Unntaksvurderinga må vere gjort før materialet blir sendt.");
+        if (!txt("grunnlag_utlevering")) a("grunnlag_utlevering", "Kva er sladda og kva er grunnlaget", "Fyll ut dette feltet.");
+      }
+      if (!txt("vurd_namn")) a("vurd_namn", "Vurdert av", "Fyll ut dette feltet.");
+      if (!$("vurd_dato").value) a("vurd_dato", "Dato for vurdering", "Velg ein dato.");
+    },
+    function (a) {
+      if (!$("mottakar_org").value) a("mottakar_org", "Mottakarorganisasjon", "Vel ein organisasjon.");
+      else if ($("mottakar_org").value === "annan") a("mottakar_org", "Mottakarorganisasjon", "Organisasjonen er ikkje på godkjend mottakarliste.");
+      if (!txt("m_eining")) a("m_eining", "Kommune eller eining hos mottakaren", "Fyll ut dette feltet.");
+      if (!txt("m_namn")) a("m_namn", "Namn på mottakar", "Materialet må til ein namngjeven person.");
+      if (!txt("m_stilling")) a("m_stilling", "Stilling", "Fyll ut dette feltet.");
+      if (!MAIL.test(txt("m_epost"))) a("m_epost", "E-post", "Oppgi ei gyldig e-postadresse.");
+      if (!chk("m_kontrollert")) a("m_kontrollert", "Identiteten er kontrollert", "Kontroller identiteten til mottakaren før du held fram.");
+      if (!txt("m_kontroll_korleis")) a("m_kontroll_korleis", "Korleis er identiteten kontrollert", "Fyll ut dette feltet.");
+    },
+    function (a) {
+      if (!files.pkg.length) a("files:pkg", "Pakke med materialet", "Legg ved pakka.");
+      if (!chk("k_krypt")) a("k_krypt", "Pakka er kryptert", "Du må bekrefte dette.");
+      if (!chk("k_kanal")) a("k_kanal", "Godkjend sendekanal", "Du må bekrefte dette.");
+      if (!chk("k_ingen_andre")) a("k_ingen_andre", "Ingen andre mottakarar", "Du må bekrefte dette.");
+      if (!chk("k_ingen_kopi")) a("k_ingen_kopi", "Ingen kopi lagra", "Du må bekrefte dette.");
+      if (!$("slett_dato").value) a("slett_dato", "Dato for sletting av mellomlagra filer", "Velg ein dato.");
+    },
+    function (a) {
+      if (!txt("av_org")) a("av_org", "Avsendar (organisasjon)", "Fyll ut dette feltet.");
+      if (!txt("av_namn")) a("av_namn", "Namn på avsendar", "Fyll ut dette feltet.");
+      if (!txt("av_rolle")) a("av_rolle", "Rolle / stilling", "Fyll ut dette feltet.");
+      if (!MAIL.test(txt("av_epost"))) a("av_epost", "E-post", "Oppgi ei gyldig e-postadresse.");
+      if (!txt("jp_utsending")) a("jp_utsending", "Journalpostreferanse for utsendinga", "Utsendinga må dokumenterast.");
+      if (!$("dato_utsending").value) a("dato_utsending", "Dato for utsending", "Velg ein dato.");
+      if (!(chk("stadfest_mottakar") && chk("stadfest_dok") && chk("stadfest_ingenny"))) a("stadfest_mottakar", "Stadfesting frå avsendar", "Alle tre stadfestingane må kryssast av.");
+    },
+    function () {}
+  ];
+  function validate(i) {
+    var out = [];
+    VAL[i](function (key, label, msg) { out.push({ key: key, label: label, msg: msg }); });
+    return out;
+  }
+  function targetFor(key) { if (key === "files:pkg") return $("dz_pkg").querySelector(".dz-box"); return $(key) || form.querySelector('[name="' + key + '"]'); }
+  function wrapperFor(key) {
+    if (key === "files:pkg") return $("dz_pkg");
+    if (key === "stadfest_mottakar") return $("stadfest_fs");
+    var t = targetFor(key);
+    if (t.type === "radio") return t.closest("fieldset");
+    if (t.type === "checkbox") return t.closest("label");
+    return t.closest(".f");
+  }
+  function setErr(key, msg, on) {
+    var old = document.querySelector('.err[data-for="' + key + '"]'); if (old) old.parentNode.removeChild(old);
+    var t = targetFor(key);
+    if (t && /^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName) && !isChk(t)) { if (on) t.setAttribute("aria-invalid", "true"); else t.removeAttribute("aria-invalid"); }
+    if (!on) return;
+    var d = document.createElement("div"); d.className = "err"; d.setAttribute("data-for", key); d.textContent = msg;
+    var w = wrapperFor(key);
+    if (w.tagName === "LABEL") w.insertAdjacentElement("afterend", d); else w.appendChild(d);
+  }
+  function clearErrors() {
+    [].slice.call(document.querySelectorAll(".errsum, .err[data-for]")).forEach(function (n) { n.parentNode.removeChild(n); });
+    [].slice.call(document.querySelectorAll("[aria-invalid]")).forEach(function (n) { n.removeAttribute("aria-invalid"); });
+  }
+  function showErrors(list) {
+    clearErrors();
+    var sec = document.querySelector('.step[data-step="' + step + '"]');
+    list.forEach(function (p) { setErr(p.key, p.msg, true); });
+    var box = document.createElement("div"); box.className = "errsum"; box.setAttribute("role", "alert"); box.tabIndex = -1;
+    var h = document.createElement("h2"); h.textContent = list.length === 1 ? "Det er 1 feil i skjemaet" : "Det er " + list.length + " feil i skjemaet";
+    var ul = document.createElement("ul");
+    list.forEach(function (p) {
+      var li = document.createElement("li"), a = document.createElement("a");
+      a.href = "#"; a.setAttribute("data-goto", p.key); a.textContent = p.label;
+      li.appendChild(a); ul.appendChild(li);
+    });
+    box.appendChild(h); box.appendChild(ul); sec.insertBefore(box, sec.firstChild);
+    box.addEventListener("click", function (ev) {
+      var a = ev.target.closest("a[data-goto]"); if (!a) return; ev.preventDefault();
+      var t = targetFor(a.getAttribute("data-goto")); if (t) { t.focus(); try { t.scrollIntoView({ block: "center" }); } catch (e) {} }
+    });
+    box.focus();
+  }
+  function recheck() {
+    if (!document.querySelector(".errsum")) return;
+    var still = validate(step), keys = {};
+    still.forEach(function (p) { keys[p.key] = 1; });
+    [].slice.call(document.querySelectorAll(".err[data-for]")).forEach(function (n) { var k = n.getAttribute("data-for"); if (!keys[k]) setErr(k, "", false); });
+    [].slice.call(document.querySelectorAll(".errsum a[data-goto]")).forEach(function (a) { if (!keys[a.getAttribute("data-goto")]) a.parentNode.parentNode.removeChild(a.parentNode); });
+    var sum = document.querySelector(".errsum");
+    if (sum && !sum.querySelectorAll("li").length) sum.parentNode.removeChild(sum);
+  }
+
+  /* ---------- drop zone (one package only) ---------- */
+  function renderFiles() {
+    var ul = $("dz_pkg").querySelector(".files"); ul.innerHTML = "";
+    files.pkg.forEach(function (f, idx) {
+      var li = document.createElement("li");
+      var n = document.createElement("span"); n.className = "fname"; n.textContent = f.name;
+      var m = document.createElement("span"); m.className = "meta2";
+      var s = document.createElement("span"); s.textContent = fmtSize(f.size);
+      var ok = document.createElement("span"); ok.className = "okf"; ok.textContent = "✓ Lagd ved";
+      m.appendChild(s); m.appendChild(ok);
+      var b = document.createElement("button"); b.type = "button"; b.className = "ghost del"; b.textContent = "Slett";
+      b.setAttribute("aria-label", "Slett " + f.name);
+      b.addEventListener("click", function () { files.pkg.splice(idx, 1); renderFiles(); refresh(); save(); });
+      li.appendChild(n); li.appendChild(b); li.appendChild(m); ul.appendChild(li);
+    });
+    $("dz_pkg").classList.toggle("full", files.pkg.length >= 1);
+  }
+  function addFiles(list) {
+    var cfg = ZONES.pkg, box = $("dz_pkg").querySelector(".dz-err"); box.innerHTML = "";
+    function bad(msg) { var d = document.createElement("div"); d.className = "err"; d.textContent = msg; box.appendChild(d); }
+    [].slice.call(list).forEach(function (f) {
+      var low = f.name.toLowerCase();
+      if (files.pkg.length >= 1) { bad("«" + f.name + "» vart ikkje lagd ved. Berre éi pakke kan leggjast ved. Slett den noverande pakka først."); return; }
+      if (!cfg.accept.some(function (a) { return low.slice(-a.length) === a; })) { bad("«" + f.name + "» vart ikkje lagd ved. Filtypen er ikkje tillaten."); return; }
+      if (f.size > cfg.max) { bad("«" + f.name + "» vart ikkje lagd ved. Fila er større enn " + cfg.limit + "."); return; }
+      files.pkg.push({ name: f.name, size: f.size });
+    });
+    renderFiles(); refresh(); recheck(); save();
+  }
+  (function () {
+    var dz = $("dz_pkg"), box = dz.querySelector(".dz-box"), input = dz.querySelector("input[type=file]");
+    function open() {
+      if (files.pkg.length >= 1) {
+        var eb = dz.querySelector(".dz-err"); eb.innerHTML = "";
+        var d = document.createElement("div"); d.className = "err"; d.textContent = "Berre éi pakke kan leggjast ved. Slett den noverande pakka først."; eb.appendChild(d); return;
+      }
+      input.click();
+    }
+    box.addEventListener("click", open);
+    box.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); open(); } });
+    input.addEventListener("change", function () { addFiles(input.files); input.value = ""; });
+    ["dragenter", "dragover"].forEach(function (t) { dz.addEventListener(t, function (ev) { ev.preventDefault(); dz.classList.add("over"); }); });
+    ["dragleave", "drop"].forEach(function (t) { dz.addEventListener(t, function (ev) { ev.preventDefault(); dz.classList.remove("over"); }); });
+    dz.addEventListener("drop", function (ev) { if (ev.dataTransfer && ev.dataTransfer.files) addFiles(ev.dataTransfer.files); });
+    ["dragover", "drop"].forEach(function (t) { window.addEventListener(t, function (ev) { ev.preventDefault(); }); });
+  })();
+
+  /* ---------- enforcement switch ---------- */
+  function paintNote() {
+    $("rn_txt").textContent = ENFORCE ? "Kontroll av obligatoriske felt er på." : "Gjennomgangsmodus: obligatoriske felt blir ikkje kontrollerte.";
+    $("rn_btn").textContent = ENFORCE ? "Slå av kontroll" : "Slå på kontroll";
+  }
+  $("rn_btn").addEventListener("click", function () {
+    ENFORCE = !ENFORCE; clearErrors();
+    reached = ENFORCE ? step : LAST;
+    paintNote(); paintProgress(); save();
+  });
+
+  /* ---------- navigation ---------- */
+  function buildProgress() {
+    var nav = $("progress"); nav.innerHTML = "";
+    STEPS.forEach(function (s, i) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "seg";
+      b.setAttribute("aria-label", "Steg " + (i + 1) + ": " + s.s);
+      b.appendChild(document.createElement("i"));
+      b.addEventListener("click", function () { if (i <= reached && step <= LAST) go(i, true); });
+      nav.appendChild(b);
+    });
+  }
+  function paintProgress() {
+    [].slice.call($("progress").children).forEach(function (b, i) {
+      b.setAttribute("data-s", i === step ? "cur" : (i < step || i < reached) ? "done" : "todo");
+      b.disabled = i > reached;
+      if (i === step) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
+    });
+  }
+  function go(n, focus) {
+    if (!ENFORCE) reached = LAST;
+    step = n; clearErrors(); refresh();
+    [].slice.call(document.querySelectorAll(".step")).forEach(function (s) { s.hidden = +s.getAttribute("data-step") !== n; });
+    var rc = n > LAST;
+    $("progress").hidden = rc; $("reviewnote").hidden = rc;
+    $("eyebrow").textContent = rc ? "Innsyn i materiale" : "Steg " + (n + 1) + " av " + STEPS.length + " · " + STEPS[n].s;
+    $("h1").textContent = rc ? "Kvittering" : STEPS[n].s;
+    $("sub").textContent = rc ? "" : STEPS[n].sub; $("sub").hidden = rc || !STEPS[n].sub;
+    $("nav").hidden = rc; $("foot").hidden = rc;
+    $("back").hidden = n === 0;
+    $("next").textContent = n === LAST ? "Send inn" : "Neste";
+    $("refnr").textContent = ref;
+    if (n === LAST) renderSummary();
+    if (rc) renderReceipt();
+    paintNote(); paintProgress(); save();
+    if (focus) { try { window.scrollTo(0, 0); } catch (e) {} $("h1").focus(); }
+  }
+  function next() {
+    if (step < LAST) {
+      if (ENFORCE) {
+        var errs = validate(step);
+        if (errs.length) { showErrors(errs); return; }
+      }
+      reached = Math.max(reached, step + 1); go(step + 1, true); return;
+    }
+    if (ENFORCE) {
+      for (var i = 0; i < LAST; i++) {
+        var e2 = validate(i);
+        if (e2.length) { go(i, false); showErrors(e2); return; }
+      }
+    }
+    go(LAST + 1, true);
+  }
+
+  /* ---------- summary, receipt, export ---------- */
+  function fileList() { return files.pkg.map(function (f) { return f.name + " (" + fmtSize(f.size) + ")"; }).join("\n"); }
+  function rows(i) {
+    var R = [];
+    function add(l, v, show) { if (show === false) return; R.push([l, v === "" || v == null ? "–" : v]); }
+    var yn = function (n) { return chk(n) ? "Ja" : "Nei"; };
+    if (i === 0) {
+      add("Dato motteke", $("dato_motteke").value); add("Korleis kom førespurnaden inn", selText("kanal")); add("Kven bed om innsyn", txt("fraa"));
+      add("Grunnlag for innsyn", $("grunnlag").value === "anna" ? "Anna: " + txt("grunnlag_anna") : selText("grunnlag"));
+      add("Kva blir det bedt om innsyn i", txt("onske")); add("Sak- eller journalpostreferanse", txt("ref_vlfk")); add("Journalført i systema til Vestland fylkeskommune", yn("journalfort"));
+    } else if (i === 1) {
+      add("Kven har materialet", txt("holder"));
+      add("Tidsrom", ($("periode_fra").value || "…") + " – " + ($("periode_til").value || "…"), !!($("periode_fra").value || $("periode_til").value));
+      add("Type materiale", choiceText("matype"));
+      add("Skanna materiale kontrollert", yn("skan_ok"), val("matype") === "papir" || val("matype") === "begge");
+      add("Førebudd av", [txt("prep_by"), txt("prep_org")].filter(Boolean).join(", "));
+      add("Korleis er materialet funne og førebudd", txt("prep_skildring")); add("Tal på dokument", txt("antal"));
+    } else if (i === 2) {
+      var sens = val("nivaa") && val("nivaa") !== "open";
+      add("Sikkerheitsnivå", choiceText("nivaa"));
+      add("Unntak er vurderte", yn("unntak"), sens); add("Sladda eller fjerna, og grunnlag", txt("grunnlag_utlevering"), sens);
+      add("Vurdert av", txt("vurd_namn")); add("Dato for vurdering", $("vurd_dato").value);
+    } else if (i === 3) {
+      var w = WL[$("mottakar_org").value];
+      add("Mottakarorganisasjon", selText("mottakar_org")); add("Sendekanal", w ? "via " + w.channel : "", !!w);
+      add("Kommune eller eining", txt("m_eining")); add("Namn", txt("m_namn")); add("Stilling", txt("m_stilling")); add("E-post", txt("m_epost")); add("Telefon", txt("m_telefon"));
+      add("Identitet kontrollert", yn("m_kontrollert")); add("Korleis kontrollert", txt("m_kontroll_korleis"));
+    } else if (i === 4) {
+      add("Pakke-ID", ref); add("Pakke", fileList()); add("Kontrollsum (SHA-256)", txt("p_hash"));
+      add("Pakka er kryptert, nøkkel sendt separat", yn("k_krypt")); add("Berre godkjend sendekanal", yn("k_kanal"));
+      add("Ingen andre mottakarar eller parallelle pakker", yn("k_ingen_andre")); add("Ingen kopi lagra etter utsending", yn("k_ingen_kopi"));
+      add("Dato for sletting av mellomlagra filer", $("slett_dato").value);
+    } else if (i === 5) {
+      add("Avsendar", txt("av_org")); add("Namn", txt("av_namn")); add("Rolle / stilling", txt("av_rolle")); add("E-post", txt("av_epost"));
+      add("Journalpostreferanse for utsendinga", txt("jp_utsending")); add("Dato for utsending", $("dato_utsending").value);
+      add("Stadfesting", chk("stadfest_mottakar") && chk("stadfest_dok") && chk("stadfest_ingenny") ? "Alle tre stadfestingane er kryssa av" : "Ikkje stadfesta");
+    }
+    return R;
+  }
+  function dl(r) {
+    var d = document.createElement("dl"); d.className = "sum";
+    r.forEach(function (p) {
+      var t = document.createElement("dt"); t.textContent = p[0];
+      var v = document.createElement("dd"); v.textContent = p[1];
+      d.appendChild(t); d.appendChild(v);
+    });
+    return d;
+  }
+  function renderSummary() {
+    var box = $("summary"); box.innerHTML = "";
+    for (var i = 0; i < LAST; i++) {
+      (function (i) {
+        var b = document.createElement("div"); b.className = "sumblock";
+        var h = document.createElement("div"); h.className = "sumhead";
+        var t = document.createElement("h2"); t.textContent = (i + 1) + ". " + STEPS[i].s;
+        var e = document.createElement("button"); e.type = "button"; e.className = "link"; e.textContent = "Endre";
+        e.setAttribute("aria-label", "Endre " + STEPS[i].s);
+        e.addEventListener("click", function () { go(i, true); });
+        h.appendChild(t); h.appendChild(e); b.appendChild(h); b.appendChild(dl(rows(i))); box.appendChild(b);
+      })(i);
+    }
+  }
+  function renderReceipt() {
+    var now = new Date(), w = WL[$("mottakar_org").value];
+    $("rc_msg").textContent = ENFORCE ? "Opplysningane er kontrollerte. Materialet kan sendast til den namngjevne mottakaren." : "Gjennomgangsmodus: obligatoriske felt er ikkje kontrollerte.";
+    $("rc_ref").textContent = "Pakke-ID: " + ref;
+    $("rc_time").textContent = "Fullført " + now.toLocaleString("nb-NO", { dateStyle: "long", timeStyle: "short" });
+    var box = $("rc_sum"); box.innerHTML = "";
+    box.appendChild(dl([
+      ["Førespurnad", txt("ref_vlfk") || "–"],
+      ["Mottakar", [txt("m_namn"), selText("mottakar_org")].filter(Boolean).join(", ") || "–"],
+      ["Sendekanal", w ? "via " + w.channel : "–"],
+      ["Sikkerheitsnivå", choiceText("nivaa") || "–"],
+      ["Pakke", files.pkg.length ? files.pkg[0].name : "–"],
+      ["Avsendar", [txt("av_namn"), txt("av_org")].filter(Boolean).join(", ") || "–"]
+    ]));
+  }
+  function summaryText() {
+    var L = ["Innsyn i materiale", "Pakke-ID: " + ref, ""];
+    for (var i = 0; i < LAST; i++) {
+      L.push((i + 1) + ". " + STEPS[i].s.toUpperCase());
+      rows(i).forEach(function (r) { L.push("  " + r[0] + ": " + r[1].replace(/\n/g, "; ")); });
+      L.push("");
+    }
+    return L.join("\n");
+  }
+  function collect() {
+    var o = { pakke_id: ref, skjemaversjon: "1.0", tidspunkt: new Date().toISOString() };
+    fields.forEach(function (e) {
+      var n = e.name || e.id;
+      if (e.type === "radio") { if (e.checked) o[n] = e.value; }
+      else if (e.type === "checkbox") o[n] = e.checked;
+      else if (e.value.trim()) o[n] = e.value.trim();
+    });
+    o.pakke_fil = files.pkg.map(function (f) { return { namn: f.name, storleik: f.size }; });
+    return o;
+  }
+  function toast(m) { $("toast").textContent = m; }
+  function copyText(text, okMsg) {
+    var fb = $("fallback");
+    function fallback() { fb.value = text; fb.hidden = false; fb.focus(); fb.select(); toast("Kopiering er blokkert her. Teksten er markert: trykk Ctrl+C eller Cmd+C."); }
+    try { navigator.clipboard.writeText(text).then(function () { fb.hidden = true; toast(okMsg); }, fallback); } catch (err) { fallback(); }
+  }
+
+  /* ---------- wiring ---------- */
+  function onChange(ev) {
+    var e = ev.target; if (!e.matches || !e.matches("input,select,textarea")) return;
+    refresh(); recheck(); save();
+  }
+  form.addEventListener("input", onChange);
+  form.addEventListener("change", onChange);
+  form.addEventListener("submit", function (ev) { ev.preventDefault(); });
+  $("next").addEventListener("click", next);
+  $("back").addEventListener("click", function () { if (step > 0) go(step - 1, true); });
+  $("copy_txt").addEventListener("click", function () { copyText(summaryText(), "Oppsummeringa er kopiert."); });
+  $("copy_json").addEventListener("click", function () { copyText(JSON.stringify(collect(), null, 2), "JSON-dataa er kopierte."); });
+
+  function clearAll() {
+    fields.forEach(function (e) { if (isChk(e)) e.checked = false; else e.value = ""; });
+    files.pkg = []; renderFiles();
+    $("dz_pkg").querySelector(".dz-err").innerHTML = "";
+    ref = newRef(); reached = ENFORCE ? 0 : LAST; $("fallback").hidden = true; toast("");
+    try { localStorage.removeItem(KEY); } catch (err) {}
+    go(0, true);
+  }
+  $("restart").addEventListener("click", clearAll);
+  var armTimer;
+  $("reset").addEventListener("click", function () {
+    var b = $("reset");
+    if (b.getAttribute("data-armed") !== "1") {
+      b.setAttribute("data-armed", "1"); b.textContent = "Trykk igjen for å tømma alt";
+      armTimer = setTimeout(function () { b.removeAttribute("data-armed"); b.textContent = "Tøm skjemaet"; }, 4000); return;
+    }
+    clearTimeout(armTimer); b.removeAttribute("data-armed"); b.textContent = "Tøm skjemaet"; clearAll();
+  });
+
+  load(); if (!ref) ref = newRef();
+  buildProgress(); renderFiles();
+  go(step, false);
+})();
+</script>
+
+</body></html>

@@ -1,0 +1,642 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Avlevering av digitalt arkiv</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  /* Layout: a stepped public-sector form (header band, segmented progress, one white card per step, Tilbake/Neste), with validation on Neste so each part must be complete before the next opens. */
+  :root {
+    --bg: #efefef;
+    --surface: #ffffff;
+    --ink: #1e2b3c;
+    --muted: #546275;
+    --line: #c9d1da;
+    --field: #1e2b3c;
+    --primary: #0062ba;
+    --primary-hover: #004f95;
+    --primary-ink: #ffffff;
+    --header: #022f51;
+    --header-ink: #ffffff;
+    --err: #b3122a;
+    --err-soft: #fbe8eb;
+    --ok: #146534;
+    --ok-soft: #d3f2d9;
+    --info-soft: #e6f0f9;
+    --focus: #0062ba;
+    --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1722; --surface: #172331; --ink: #e8eef5; --muted: #9db0c3; --line: #33465a; --field: #9db0c3;
+      --primary: #4aa3f0; --primary-hover: #7cbcf5; --primary-ink: #04172a; --header: #0a1a2b; --header-ink: #e8eef5;
+      --err: #ff8a98; --err-soft: #3b1a20; --ok: #86dc9f; --ok-soft: #17331f; --info-soft: #1b3045; --focus: #7cbcf5;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1722; --surface: #172331; --ink: #e8eef5; --muted: #9db0c3; --line: #33465a; --field: #9db0c3;
+    --primary: #4aa3f0; --primary-hover: #7cbcf5; --primary-ink: #04172a; --header: #0a1a2b; --header-ink: #e8eef5;
+    --err: #ff8a98; --err-soft: #3b1a20; --ok: #86dc9f; --ok-soft: #17331f; --info-soft: #1b3045; --focus: #7cbcf5;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--font); }
+  h1, h2, h3, p, ul, dl, dd { margin: 0; }
+  .in { max-width: 792px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .top { background: var(--header); color: var(--header-ink); }
+  .top .in { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-block: 14px; }
+  .top .org { font-weight: 700; font-size: 17px; }
+  .top .tag { font-size: 14px; opacity: .85; }
+
+  .main { padding-block: 24px 56px; display: flex; flex-direction: column; gap: 20px; }
+  .head { display: flex; flex-direction: column; gap: 10px; }
+  #progress { display: flex; gap: 6px; }
+  .seg { flex: 1; min-width: 0; height: 20px; padding: 0; border: 0; background: none; display: flex; align-items: center; cursor: pointer; }
+  .seg i { display: block; width: 100%; height: 6px; border-radius: 3px; background: var(--line); }
+  .seg[data-s="done"] i { background: var(--primary); }
+  .seg[data-s="cur"] i { background: var(--primary); height: 10px; }
+  .seg:disabled { cursor: not-allowed; }
+  .eyebrow { font-size: 14px; color: var(--muted); font-weight: 500; }
+  h1 { font-size: clamp(26px, 5.5vw, 34px); line-height: 1.15; font-weight: 700; letter-spacing: -0.015em; text-wrap: balance; }
+  h1:focus { outline: none; }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 28px; display: flex; flex-direction: column; gap: 26px; }
+  @media (max-width: 560px) { .card { padding: 20px 16px; } }
+  .step { display: flex; flex-direction: column; gap: 26px; }
+  .lede { color: var(--muted); max-width: 64ch; }
+  .group { display: flex; flex-direction: column; gap: 16px; }
+  .group + .group { border-top: 1px solid var(--line); padding-top: 26px; }
+  h2 { font-size: 20px; line-height: 1.25; font-weight: 700; }
+
+  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  @media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+  .f { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .f > label, .lab { font-weight: 600; font-size: 16px; }
+  .opt { font-weight: 400; color: var(--muted); }
+  .help { font-size: 14px; color: var(--muted); }
+  input[type="text"], input[type="date"] {
+    width: 100%; min-height: 46px; font: 400 16px/1.3 var(--font); color: var(--ink); background: var(--surface);
+    border: 1px solid var(--field); border-radius: 4px; padding: 9px 12px; min-width: 0;
+  }
+  input[type="text"]:hover, input[type="date"]:hover { box-shadow: 0 0 0 1px var(--field); }
+  input.invalid { border-color: var(--err); box-shadow: 0 0 0 1px var(--err); }
+  input::placeholder { color: var(--muted); opacity: .8; }
+
+  .check { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 12px; align-items: start; cursor: pointer; padding: 2px 0; }
+  .check input { width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--primary); cursor: pointer; }
+  .check small { display: block; color: var(--muted); font-size: 14px; }
+  .item { display: flex; flex-direction: column; gap: 14px; }
+  .item .f { margin-left: 36px; }
+  .item + .item { border-top: 1px solid var(--line); padding-top: 18px; }
+  .sub { display: flex; flex-direction: column; gap: 14px; }
+  .radios { display: flex; flex-direction: column; gap: 12px; border: 0; margin: 0; padding: 0; min-width: 0; }
+  .radios legend { padding: 0; font-weight: 600; margin-bottom: 8px; }
+  .cond { margin-left: 36px; }
+
+  .err { display: flex; gap: 6px; color: var(--err); font-weight: 600; font-size: 14px; margin-top: 4px; }
+  .err::before { content: "!"; flex: none; width: 18px; height: 18px; border-radius: 50%; background: var(--err); color: var(--surface); font-size: 12px; line-height: 18px; text-align: center; }
+  .errsum { border: 2px solid var(--err); background: var(--err-soft); border-radius: 4px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .errsum:focus { outline: none; }
+  .errsum h2 { font-size: 18px; color: var(--err); }
+  .errsum ul { padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+  .errsum a { color: var(--err); font-weight: 500; }
+
+  /* file drop zone */
+  .dz { display: flex; flex-direction: column; gap: 10px; }
+  .dz-box { border: 2px dashed var(--field); border-radius: 6px; background: var(--info-soft); padding: 26px 18px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; cursor: pointer; }
+  .dz-box:hover, .dz.over .dz-box { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 3px var(--primary); }
+  .dz-box svg { width: 34px; height: 34px; color: var(--primary); }
+  .dz-box b { font-weight: 600; }
+  .dz-box u { color: var(--primary); text-underline-offset: 3px; font-weight: 600; }
+  .dz.invalid .dz-box { border-color: var(--err); }
+  .files { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .files li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; }
+  .files .fname { font-weight: 600; overflow-wrap: anywhere; }
+  .files .meta { grid-column: 1; font-size: 14px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; }
+  .files .ok { color: var(--ok); font-weight: 600; }
+  .files .del { grid-column: 2; grid-row: 1 / span 2; }
+  .dz-err { display: flex; flex-direction: column; gap: 4px; }
+
+  button { font: 600 16px/1.2 var(--font); border-radius: 4px; padding: 12px 22px; min-height: 46px; cursor: pointer; border: 2px solid var(--primary); background: var(--primary); color: var(--primary-ink); }
+  button:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+  button.ghost { background: transparent; color: var(--primary); }
+  button.ghost:hover { background: var(--info-soft); }
+  button.del { min-height: 0; padding: 6px 12px; font-size: 14px; }
+  button.link { background: none; border: 0; padding: 4px 2px; min-height: 0; color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+  button.link:hover { background: none; color: var(--primary-hover); }
+  button.link[data-armed="1"] { color: var(--err); }
+  .nav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .nav .spacer { flex: 1; }
+
+  /* summary */
+  .sumblock { display: flex; flex-direction: column; gap: 10px; }
+  .sumhead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  dl.sum { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 0; border-top: 1px solid var(--line); }
+  dl.sum dt, dl.sum dd { padding: 9px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+  dl.sum dt { color: var(--muted); padding-right: 12px; }
+  dl.sum dd { font-weight: 500; }
+  @media (max-width: 560px) { dl.sum { grid-template-columns: 1fr; } dl.sum dt { border-bottom: 0; padding-bottom: 0; } }
+  .sumblock + .sumblock { margin-top: 6px; }
+
+  /* receipt */
+  .receipt-box { background: var(--ok-soft); color: var(--ok); border-radius: 6px; padding: 22px; display: flex; flex-direction: column; gap: 8px; }
+  .receipt-box h2 { font-size: 24px; }
+  .receipt-box .ref { font: 600 16px/1.3 ui-monospace, "SFMono-Regular", Menlo, monospace; color: var(--ink); }
+  .note { background: var(--info-soft); border-radius: 4px; padding: 12px 14px; font-size: 14px; }
+  textarea { width: 100%; min-height: 160px; font: 400 13px/1.5 ui-monospace, Menlo, monospace; color: var(--ink); background: var(--surface); border: 1px solid var(--field); border-radius: 4px; padding: 10px; }
+  .toast { font-size: 14px; color: var(--muted); min-height: 1.3em; }
+  .btns { display: flex; gap: 12px; flex-wrap: wrap; }
+  footer { font-size: 14px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+</style>
+
+<header class="top"><div class="in"><span class="org">Vestland fylkeskommune</span><span class="tag">Intern avlevering</span></div></header>
+
+<main class="in main">
+  <div class="head" id="head">
+    <nav aria-label="Fremdrift" id="progress"></nav>
+    <p class="eyebrow" id="eyebrow"></p>
+    <h1 id="h1" tabindex="-1"></h1>
+  </div>
+
+  <form id="form" autocomplete="off" novalidate>
+    <div class="main" style="padding:0; gap:20px">
+      <div class="card" id="card">
+
+        <!-- Steg 1 -->
+        <section class="step" data-step="0">
+          <p class="lede">Dette skjemaet sikrer at et digitalt arkiv er vurdert, dokumentert og godkjent før det registreres som <b>avlevert</b> til Dokumentsenter. Skjemaet er til intern bruk. Alle felt er påkrevd om ikke noe annet står.</p>
+          <div class="grid2">
+            <div class="f"><label for="sys_name">Systemnavn</label><input type="text" id="sys_name" data-k data-label="Systemnavn"></div>
+            <div class="f"><label for="sys_id">System-ID</label><span class="help">ID i systemregisteret</span><input type="text" id="sys_id" data-k data-label="System-ID"></div>
+            <div class="f"><label for="sys_owner">Systemeier</label><input type="text" id="sys_owner" data-k data-label="Systemeier"></div>
+            <div class="f"><label for="sys_unit">Avdeling eller seksjon</label><input type="text" id="sys_unit" data-k data-label="Avdeling eller seksjon"></div>
+          </div>
+        </section>
+
+        <!-- Steg 2 -->
+        <section class="step" data-step="1" hidden>
+          <p class="lede">Systemeier har ansvaret for vurderingen av det digitale materialet og for systemdokumentasjonen. Bekreft hvert punkt og oppgi hvor det er dokumentert.</p>
+
+          <div class="group">
+            <h2>Vurderinger</h2>
+            <div class="item">
+              <label class="check"><input type="checkbox" id="a_bev" data-k data-label="Bevaringsvurderingen er gjennomført"><span>Bevaringsvurderingen er gjennomført<small>Hva som skal bevares, og hvor lenge.</small></span></label>
+              <div class="f"><label for="a_bev_ref">Sak- eller dokumentreferanse</label><input type="text" id="a_bev_ref" data-k data-label="Referanse til bevaringsvurdering"></div>
+            </div>
+            <div class="item">
+              <label class="check"><input type="checkbox" id="a_kass" data-k data-label="Kassasjonsvurderingen er gjennomført"><span>Kassasjonsvurderingen er gjennomført<small>Hva som kan kasseres, og vedtaket vurderingen bygger på.</small></span></label>
+              <div class="f"><label for="a_kass_ref">Sak-, dokument- eller vedtaksreferanse</label><input type="text" id="a_kass_ref" data-k data-label="Referanse til kassasjonsvurdering"></div>
+            </div>
+          </div>
+
+          <div class="group">
+            <h2>Systemdokumentasjon</h2>
+            <div class="sub">
+              <label class="check"><input type="checkbox" id="d1" data-k data-label="Systembeskrivelse"><span>Systembeskrivelse<small>Formål, funksjoner og driftsperiode.</small></span></label>
+              <label class="check"><input type="checkbox" id="d2" data-k data-label="Datamodell og databaseskjema"><span>Datamodell og databaseskjema<small>Inkludert kodelister og relasjoner mellom tabeller.</small></span></label>
+              <label class="check"><input type="checkbox" id="d3" data-k data-label="Metadata og feltbeskrivelser"><span>Metadata og feltbeskrivelser</span></label>
+              <label class="check"><input type="checkbox" id="d4" data-k data-label="Grensesnitt og integrasjoner"><span>Grensesnitt og integrasjoner mot andre systemer</span></label>
+              <label class="check"><input type="checkbox" id="d5" data-k data-label="Brukerroller, sikkerhetsgradering og personopplysninger"><span>Brukerroller, sikkerhetsgradering og behandlede personopplysninger</span></label>
+              <label class="check"><input type="checkbox" id="d6" data-k data-label="Eksportformat spesifisert"><span>Eksportformat er spesifisert<small>For eksempel Noark 5-uttrekk, eller format avtalt med Dokumentsenter.</small></span></label>
+              <label class="check"><input type="checkbox" id="d7" data-k data-label="Versjonshistorikk"><span>Versjonshistorikk og vesentlige endringer i systemet</span></label>
+            </div>
+
+            <div class="dz" id="dz_doc" data-zone="doc">
+              <span class="lab">Last opp systemdokumentasjonen</span>
+              <span class="help">Selve dokumentasjonen leveres her. Arkivpakken leveres separat i neste steg.</span>
+              <div class="dz-box" role="button" tabindex="0" aria-label="Dra og slipp filer her, eller velg filer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+                <span><b>Dra og slipp filer her</b> eller <u>velg filer</u></span>
+                <span class="help">PDF, Word, Excel, ODT, TXT, MD, PNG, JPG. Maks 50 MB per fil.</span>
+              </div>
+              <input type="file" multiple hidden accept=".pdf,.doc,.docx,.xls,.xlsx,.odt,.txt,.md,.png,.jpg,.jpeg">
+              <div class="dz-err" role="alert"></div>
+              <ul class="files" aria-label="Opplastede dokumentasjonsfiler"></ul>
+              <p class="help">Prototype: filene lastes ikke opp noe sted. Bare filnavn og størrelse vises.</p>
+            </div>
+          </div>
+
+          <div class="group">
+            <h2>Bekreftelse fra systemeier</h2>
+            <label class="check"><input type="checkbox" id="a_decl" data-k data-label="Bekreftelse fra systemeier"><span>Jeg bekrefter at vurderingene og dokumentasjonen er komplett og følger med systemet.</span></label>
+            <div class="grid2">
+              <div class="f"><label for="a_name">Navn</label><input type="text" id="a_name" data-k data-label="Navn (systemeier)"></div>
+              <div class="f"><label for="a_date">Dato</label><input type="date" id="a_date" data-k data-label="Dato (systemeier)"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Steg 3 -->
+        <section class="step" data-step="2" hidden>
+          <p class="lede">Arkivpakken er selve uttrekket av dataene fra systemet. Den leveres adskilt fra dokumentasjonen i forrige steg.</p>
+
+          <fieldset class="radios" id="fmt_group">
+            <legend>Format på arkivpakken</legend>
+            <label class="check"><input type="radio" name="fmt" id="fmt_noark5" data-k data-label="Format: Noark 5-uttrekk"><span>Noark 5-uttrekk</span></label>
+            <label class="check"><input type="radio" name="fmt" id="fmt_annet" data-k data-label="Format: annet avtalt format"><span>Annet avtalt format</span></label>
+            <div class="f cond" id="fmt_other_wrap" hidden><label for="fmt_other">Beskriv formatet</label><input type="text" id="fmt_other" data-k data-label="Beskrivelse av formatet"></div>
+          </fieldset>
+
+          <div class="dz" id="dz_pkg" data-zone="pkg">
+            <span class="lab">Last opp arkivpakken</span>
+            <div class="dz-box" role="button" tabindex="0" aria-label="Dra og slipp arkivpakken her, eller velg fil">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5V8ZM3 8l9 5 9-5M12 13v8"/></svg>
+              <span><b>Dra og slipp arkivpakken her</b> eller <u>velg fil</u></span>
+              <span class="help">ZIP, TAR, GZ, TGZ, 7Z, XML. Maks 5 GB per fil.</span>
+            </div>
+            <input type="file" multiple hidden accept=".zip,.tar,.gz,.tgz,.7z,.xml">
+            <div class="dz-err" role="alert"></div>
+            <ul class="files" aria-label="Opplastede arkivpakkefiler"></ul>
+            <p class="help">Prototype: filene lastes ikke opp noe sted. Bare filnavn og størrelse vises.</p>
+          </div>
+
+          <div class="group">
+            <label class="check"><input type="checkbox" id="p_tested" data-k data-label="Uttrekket er testet og kontrollert"><span>Uttrekket er testet og kontrollert mot kildesystemet</span></label>
+            <div class="f"><label for="p_hash">Kontrollsum (SHA-256) <span class="opt">(valgfritt)</span></label><input type="text" id="p_hash" data-k data-label="Kontrollsum (SHA-256)"></div>
+          </div>
+        </section>
+
+        <!-- Steg 4 -->
+        <section class="step" data-step="3" hidden>
+          <p class="lede">Arkivansvaret er delegert til IDI-direktør. Du kommer hit først når systemeier har fullført sin del.</p>
+          <div class="grid2">
+            <div class="f"><label for="b_name">Navn på IDI-direktør</label><input type="text" id="b_name" data-k data-label="Navn på IDI-direktør"></div>
+            <div class="f"><label for="b_deleg_ref">Referanse til delegeringen</label><span class="help">Delegeringsbrev eller reglement</span><input type="text" id="b_deleg_ref" data-k data-label="Referanse til delegeringen"></div>
+          </div>
+          <div class="sub">
+            <label class="check"><input type="checkbox" id="b_deleg" data-k data-label="Delegeringen er bekreftet"><span>Arkivansvaret for dette systemet er delegert til IDI-direktør</span></label>
+            <label class="check"><input type="checkbox" id="b_rev" data-k data-label="Vurderingene er gjennomgått"><span>Jeg har gjennomgått bevaringsvurderingen og kassasjonsvurderingen</span></label>
+            <label class="check"><input type="checkbox" id="b_revdoc" data-k data-label="Dokumentasjonen og arkivpakken er gjennomgått"><span>Jeg har gjennomgått systemdokumentasjonen og opplysningene om arkivpakken</span></label>
+          </div>
+          <div class="group">
+            <h2>Godkjenning</h2>
+            <label class="check"><input type="checkbox" id="b_approve" data-k data-label="Avleveringen er godkjent"><span>Jeg godkjenner avlevering av dette digitale arkivet til Dokumentsenter</span></label>
+            <div class="f" style="max-width: 280px"><label for="b_date">Dato for godkjenning</label><input type="date" id="b_date" data-k data-label="Dato for godkjenning"></div>
+          </div>
+        </section>
+
+        <!-- Steg 5 -->
+        <section class="step" data-step="4" hidden>
+          <p class="lede">Dokumentsenter registrerer systemet som avlevert. Du kommer hit først når arkivansvarlig har godkjent avleveringen.</p>
+          <div class="sub">
+            <label class="check"><input type="checkbox" id="c_received" data-k data-label="Mottak av vurderinger, dokumentasjon, arkivpakke og godkjenning"><span>Vurderinger, systemdokumentasjon, arkivpakke og godkjenning er mottatt</span></label>
+            <label class="check"><input type="checkbox" id="c_registered" data-k data-label="Registrert med status avlevert"><span>Systemet er registrert med status <b>avlevert</b></span></label>
+          </div>
+          <div class="grid2">
+            <div class="f"><label for="c_ref">Registreringsreferanse</label><span class="help">Innførings- eller saksnummer</span><input type="text" id="c_ref" data-k data-label="Registreringsreferanse"></div>
+            <div class="f"><label for="c_regdate">Dato registrert som avlevert</label><input type="date" id="c_regdate" data-k data-label="Dato registrert som avlevert"></div>
+            <div class="f"><label for="c_name">Registrert av</label><input type="text" id="c_name" data-k data-label="Registrert av"></div>
+          </div>
+        </section>
+
+        <!-- Steg 6 -->
+        <section class="step" data-step="5" hidden>
+          <p class="lede">Kontroller opplysningene før du sender inn. Bruk «Endre» for å gå tilbake til et steg.</p>
+          <div id="summary"></div>
+        </section>
+
+        <!-- Kvittering -->
+        <section class="step" data-step="6" hidden>
+          <div class="receipt-box" role="status">
+            <h2>Avleveringen er fullført</h2>
+            <p>Alle tre parter har fullført sin del. Systemet kan lukkes som avlevert.</p>
+            <p class="ref" id="rc_ref"></p>
+            <p id="rc_time"></p>
+          </div>
+          <div id="rc_sum"></div>
+          <p class="note">Dette er en prototype. Ingenting er sendt eller lagret hos Dokumentsenter. Kopier oppsummeringen og legg den i arkivsaken.</p>
+          <div class="btns">
+            <button type="button" id="copy">Kopier oppsummering</button>
+            <button type="button" class="ghost" id="restart">Start ny avlevering</button>
+          </div>
+          <p class="toast" id="toast" role="status"></p>
+          <textarea id="fallback" readonly hidden aria-label="Oppsummering som tekst"></textarea>
+        </section>
+      </div>
+
+      <div class="nav" id="nav">
+        <button type="button" class="ghost" id="back">Tilbake</button>
+        <span class="spacer"></span>
+        <button type="button" id="next">Neste</button>
+      </div>
+    </div>
+  </form>
+
+  <footer id="foot"><span>Utfylte opplysninger lagres bare i denne nettleseren.</span><button type="button" class="link" id="reset">Tøm skjema</button></footer>
+</main>
+
+<script>
+(function () {
+  var KEY = "vfk-avlevering-skjema-v2";
+  var $ = function (id) { return document.getElementById(id); };
+  var els = [].slice.call(document.querySelectorAll("[data-k]"));
+  var D = ["d1", "d2", "d3", "d4", "d5", "d6", "d7"];
+
+  var STEPS = [
+    { short: "Om systemet", h1: "Om systemet", req: ["sys_name", "sys_id", "sys_owner", "sys_unit"] },
+    { short: "Systemeier", h1: "Systemeier: vurderinger og dokumentasjon", req: ["a_bev", "a_bev_ref", "a_kass", "a_kass_ref"].concat(D, ["files:doc", "a_decl", "a_name", "a_date"]) },
+    { short: "Arkivpakke", h1: "Arkivpakke", req: ["fmt", "fmt_other", "files:pkg", "p_tested"] },
+    { short: "Arkivansvarlig", h1: "Arkivansvarlig: IDI-direktør", req: ["b_name", "b_deleg_ref", "b_deleg", "b_rev", "b_revdoc", "b_approve", "b_date"] },
+    { short: "Dokumentsenter", h1: "Dokumentsenter", req: ["c_received", "c_registered", "c_ref", "c_regdate", "c_name"] },
+    { short: "Oppsummering", h1: "Oppsummering", req: [] }
+  ];
+  var LAST = STEPS.length - 1;
+  var LABELS = { "files:doc": "Systemdokumentasjon (filer)", "files:pkg": "Arkivpakke (fil)", "fmt": "Format på arkivpakken", "fmt_other": "Beskrivelse av formatet" };
+  var ZONES = {
+    doc: { accept: [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".odt", ".txt", ".md", ".png", ".jpg", ".jpeg"], max: 50 * 1048576, limit: "50 MB" },
+    pkg: { accept: [".zip", ".tar", ".gz", ".tgz", ".7z", ".xml"], max: 5 * 1073741824, limit: "5 GB" }
+  };
+  var files = { doc: [], pkg: [] };
+  var step = 0, reached = 0;
+
+  function labelOf(id) { return LABELS[id] || $(id).getAttribute("data-label"); }
+  function isChk(e) { return e.type === "checkbox" || e.type === "radio"; }
+  function fmtVal() {
+    if ($("fmt_noark5").checked) return "Noark 5-uttrekk";
+    if ($("fmt_annet").checked) return "Annet avtalt format" + ($("fmt_other").value.trim() ? ": " + $("fmt_other").value.trim() : "");
+    return "";
+  }
+  function fmtSize(b) {
+    var u = ["byte", "KB", "MB", "GB"], i = 0, n = b;
+    while (n >= 1024 && i < 3) { n /= 1024; i++; }
+    return n.toLocaleString("nb-NO", { maximumFractionDigits: i === 0 ? 0 : 1 }) + " " + u[i];
+  }
+
+  /* ---------- persistence ---------- */
+  function save() {
+    try {
+      var v = {};
+      els.forEach(function (e) { v[e.id] = isChk(e) ? e.checked : e.value; });
+      localStorage.setItem(KEY, JSON.stringify({ v: v, files: files, step: step, reached: reached }));
+    } catch (err) {}
+  }
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY); if (!raw) return;
+      var o = JSON.parse(raw);
+      els.forEach(function (e) { if (!o.v || !(e.id in o.v)) return; if (isChk(e)) e.checked = !!o.v[e.id]; else e.value = o.v[e.id]; });
+      if (o.files) { files.doc = o.files.doc || []; files.pkg = o.files.pkg || []; }
+      reached = Math.min(+o.reached || 0, LAST); step = Math.min(+o.step || 0, reached);
+    } catch (err) {}
+  }
+
+  /* ---------- validation ---------- */
+  function problem(id) {
+    if (id.indexOf("files:") === 0) return files[id.slice(6)].length ? null : "Last opp minst én fil.";
+    if (id === "fmt") return ($("fmt_noark5").checked || $("fmt_annet").checked) ? null : "Velg format på arkivpakken.";
+    if (id === "fmt_other") return $("fmt_annet").checked && !$("fmt_other").value.trim() ? "Beskriv formatet." : null;
+    var e = $(id);
+    if (isChk(e)) return e.checked ? null : "Du må bekrefte dette for å gå videre.";
+    if (e.value.trim()) return null;
+    return e.type === "date" ? "Velg en dato." : "Fyll ut dette feltet.";
+  }
+  function validate(i) {
+    var out = [];
+    STEPS[i].req.forEach(function (id) { var m = problem(id); if (m) out.push({ id: id, msg: m }); });
+    return out;
+  }
+  function wrapperFor(id) {
+    if (id.indexOf("files:") === 0) return $("dz_" + id.slice(6));
+    if (id === "fmt") return $("fmt_group");
+    var e = $(id); return isChk(e) ? e.closest(".check") : e.closest(".f");
+  }
+  function targetFor(id) {
+    if (id.indexOf("files:") === 0) return $("dz_" + id.slice(6)).querySelector(".dz-box");
+    if (id === "fmt") return $("fmt_noark5");
+    return $(id);
+  }
+  function clearErrors() {
+    [].slice.call(document.querySelectorAll(".errsum, .err[data-for]")).forEach(function (n) { n.parentNode.removeChild(n); });
+    [].slice.call(document.querySelectorAll(".invalid")).forEach(function (n) { n.classList.remove("invalid"); n.removeAttribute("aria-invalid"); });
+  }
+  function clearOne(id) {
+    var n = document.querySelector('.err[data-for="' + id + '"]'); if (n) n.parentNode.removeChild(n);
+    var t = targetFor(id); if (t && t.classList) { t.classList.remove("invalid"); t.removeAttribute("aria-invalid"); }
+    var w = wrapperFor(id); if (w && w.classList) w.classList.remove("invalid");
+    var sum = document.querySelector(".errsum"); if (sum) {
+      var a = sum.querySelector('a[data-goto="' + id + '"]'); if (a) a.parentNode.parentNode.removeChild(a.parentNode);
+      if (!sum.querySelectorAll("li").length) sum.parentNode.removeChild(sum);
+    }
+  }
+  function showErrors(list) {
+    clearErrors();
+    var sec = document.querySelector('.step[data-step="' + step + '"]');
+    list.forEach(function (p) {
+      var w = wrapperFor(p.id), t = targetFor(p.id);
+      var d = document.createElement("div"); d.className = "err"; d.setAttribute("data-for", p.id); d.textContent = p.msg;
+      if (w.classList.contains("check")) w.insertAdjacentElement("afterend", d); else w.appendChild(d);
+      if (t && t.tagName === "INPUT") { t.classList.add("invalid"); t.setAttribute("aria-invalid", "true"); }
+      if (w.classList.contains("dz")) w.classList.add("invalid");
+    });
+    var box = document.createElement("div"); box.className = "errsum"; box.setAttribute("role", "alert"); box.tabIndex = -1;
+    var h = document.createElement("h2"); h.textContent = list.length === 1 ? "Det er 1 feil i skjemaet" : "Det er " + list.length + " feil i skjemaet";
+    var ul = document.createElement("ul");
+    list.forEach(function (p) {
+      var li = document.createElement("li"), a = document.createElement("a");
+      a.href = "#"; a.setAttribute("data-goto", p.id); a.textContent = labelOf(p.id) + ": " + p.msg.replace(/\.$/, "").toLowerCase();
+      li.appendChild(a); ul.appendChild(li);
+    });
+    box.appendChild(h); box.appendChild(ul); sec.insertBefore(box, sec.firstChild);
+    box.focus();
+    box.addEventListener("click", function (ev) {
+      var a = ev.target.closest("a[data-goto]"); if (!a) return; ev.preventDefault();
+      var t = targetFor(a.getAttribute("data-goto")); if (t) { t.focus(); try { t.scrollIntoView({ block: "center" }); } catch (e) {} }
+    });
+  }
+
+  /* ---------- drop zones ---------- */
+  function renderFiles(z) {
+    var ul = $("dz_" + z).querySelector(".files"); ul.innerHTML = "";
+    files[z].forEach(function (f, idx) {
+      var li = document.createElement("li");
+      var n = document.createElement("span"); n.className = "fname"; n.textContent = f.name;
+      var m = document.createElement("span"); m.className = "meta";
+      var s = document.createElement("span"); s.textContent = fmtSize(f.size);
+      var ok = document.createElement("span"); ok.className = "ok"; ok.textContent = "✓ Lastet opp";
+      m.appendChild(s); m.appendChild(ok);
+      var b = document.createElement("button"); b.type = "button"; b.className = "ghost del"; b.textContent = "Slett";
+      b.setAttribute("aria-label", "Slett " + f.name);
+      b.addEventListener("click", function () { files[z].splice(idx, 1); renderFiles(z); save(); });
+      li.appendChild(n); li.appendChild(b); li.appendChild(m); ul.appendChild(li);
+    });
+  }
+  function addFiles(z, list) {
+    var cfg = ZONES[z], box = $("dz_" + z).querySelector(".dz-err"), msgs = [], added = 0;
+    box.innerHTML = "";
+    [].slice.call(list).forEach(function (f) {
+      var low = f.name.toLowerCase();
+      if (!cfg.accept.some(function (a) { return low.slice(-a.length) === a; })) { msgs.push("«" + f.name + "» ble ikke lagt til. Filtypen er ikke tillatt."); return; }
+      if (f.size > cfg.max) { msgs.push("«" + f.name + "» ble ikke lagt til. Filen er større enn " + cfg.limit + "."); return; }
+      if (files[z].some(function (x) { return x.name === f.name && x.size === f.size; })) return;
+      files[z].push({ name: f.name, size: f.size }); added++;
+    });
+    msgs.forEach(function (m) { var d = document.createElement("div"); d.className = "err"; d.textContent = m; box.appendChild(d); });
+    if (added) clearOne("files:" + z);
+    renderFiles(z); save();
+  }
+  [].slice.call(document.querySelectorAll(".dz")).forEach(function (dz) {
+    var z = dz.getAttribute("data-zone"), box = dz.querySelector(".dz-box"), input = dz.querySelector("input[type=file]");
+    box.addEventListener("click", function () { input.click(); });
+    box.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); input.click(); } });
+    input.addEventListener("change", function () { addFiles(z, input.files); input.value = ""; });
+    ["dragenter", "dragover"].forEach(function (t) { dz.addEventListener(t, function (ev) { ev.preventDefault(); dz.classList.add("over"); }); });
+    ["dragleave", "drop"].forEach(function (t) { dz.addEventListener(t, function (ev) { ev.preventDefault(); dz.classList.remove("over"); }); });
+    dz.addEventListener("drop", function (ev) { if (ev.dataTransfer && ev.dataTransfer.files) addFiles(z, ev.dataTransfer.files); });
+  });
+  ["dragover", "drop"].forEach(function (t) { window.addEventListener(t, function (ev) { ev.preventDefault(); }); });
+
+  /* ---------- navigation ---------- */
+  function buildProgress() {
+    var nav = $("progress"); nav.innerHTML = "";
+    STEPS.forEach(function (s, i) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "seg";
+      b.setAttribute("aria-label", "Steg " + (i + 1) + ": " + s.short);
+      b.appendChild(document.createElement("i"));
+      b.addEventListener("click", function () { if (i <= reached && step <= LAST) go(i, true); });
+      nav.appendChild(b);
+    });
+  }
+  function paintProgress() {
+    [].slice.call($("progress").children).forEach(function (b, i) {
+      b.setAttribute("data-s", i === step ? "cur" : i < step || i < reached ? "done" : "todo");
+      b.disabled = i > reached;
+      if (i === step) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
+    });
+  }
+  function go(n, focus) {
+    step = n; clearErrors();
+    [].slice.call(document.querySelectorAll(".step")).forEach(function (s) { s.hidden = +s.getAttribute("data-step") !== n; });
+    var receipt = n > LAST;
+    $("progress").hidden = receipt;
+    $("eyebrow").textContent = receipt ? "Avlevering av digitalt arkiv" : "Steg " + (n + 1) + " av " + STEPS.length + " · " + STEPS[n].short;
+    $("h1").textContent = receipt ? "Kvittering" : STEPS[n].h1;
+    $("nav").hidden = receipt; $("foot").hidden = receipt;
+    $("back").hidden = n === 0;
+    $("next").textContent = n === LAST ? "Send inn" : "Neste";
+    $("fmt_other_wrap").hidden = !$("fmt_annet").checked;
+    if (n === LAST) renderSummary(); if (receipt) renderReceipt();
+    paintProgress(); save();
+    if (focus) { try { window.scrollTo(0, 0); } catch (e) {} $("h1").focus(); }
+  }
+  function next() {
+    if (step < LAST) {
+      var errs = validate(step);
+      if (errs.length) { showErrors(errs); return; }
+      reached = Math.max(reached, step + 1); go(step + 1, true); return;
+    }
+    for (var i = 0; i < LAST; i++) {
+      var e2 = validate(i);
+      if (e2.length) { go(i, false); showErrors(e2); return; }
+    }
+    go(LAST + 1, true);
+  }
+
+  /* ---------- summary and receipt ---------- */
+  function rows(i) {
+    var out = [];
+    STEPS[i].req.forEach(function (id) {
+      if (id === "fmt_other") return;
+      var v;
+      if (id.indexOf("files:") === 0) v = files[id.slice(6)].map(function (f) { return f.name + " (" + fmtSize(f.size) + ")"; }).join("\n") || "–";
+      else if (id === "fmt") v = fmtVal() || "–";
+      else if (isChk($(id))) v = $(id).checked ? "Bekreftet" : "Ikke bekreftet";
+      else v = $(id).value.trim() || "–";
+      out.push([labelOf(id), v]);
+    });
+    if (i === 2 && $("p_hash").value.trim()) out.push(["Kontrollsum (SHA-256)", $("p_hash").value.trim()]);
+    return out;
+  }
+  function dl(r) {
+    var d = document.createElement("dl"); d.className = "sum";
+    r.forEach(function (p) {
+      var t = document.createElement("dt"); t.textContent = p[0];
+      var v = document.createElement("dd"); v.style.whiteSpace = "pre-line"; v.textContent = p[1];
+      d.appendChild(t); d.appendChild(v);
+    });
+    return d;
+  }
+  function renderSummary() {
+    var box = $("summary"); box.innerHTML = "";
+    for (var i = 0; i < LAST; i++) {
+      (function (i) {
+        var b = document.createElement("div"); b.className = "sumblock";
+        var h = document.createElement("div"); h.className = "sumhead";
+        var t = document.createElement("h2"); t.textContent = STEPS[i].short;
+        var e = document.createElement("button"); e.type = "button"; e.className = "link"; e.textContent = "Endre";
+        e.setAttribute("aria-label", "Endre " + STEPS[i].short);
+        e.addEventListener("click", function () { go(i, true); });
+        h.appendChild(t); h.appendChild(e); b.appendChild(h); b.appendChild(dl(rows(i))); box.appendChild(b);
+      })(i);
+    }
+  }
+  var receiptRef = "";
+  function renderReceipt() {
+    var now = new Date();
+    if (!receiptRef) receiptRef = "AVL-" + now.getFullYear() + String(now.getMonth() + 1).padStart(2, "0") + String(now.getDate()).padStart(2, "0") + "-" + String(Math.floor(1000 + Math.random() * 9000));
+    $("rc_ref").textContent = "Referanse: " + receiptRef;
+    $("rc_time").textContent = "Fullført " + now.toLocaleString("nb-NO", { dateStyle: "long", timeStyle: "short" });
+    var box = $("rc_sum"); box.innerHTML = "";
+    box.appendChild(dl([
+      ["System", $("sys_name").value.trim() + " (" + $("sys_id").value.trim() + ")"],
+      ["Systemeier", $("a_name").value.trim() + ", " + $("a_date").value],
+      ["Arkivansvarlig (IDI-direktør)", $("b_name").value.trim() + ", " + $("b_date").value],
+      ["Registrert som avlevert", $("c_name").value.trim() + ", " + $("c_regdate").value + ", ref. " + $("c_ref").value.trim()],
+      ["Dokumentasjonsfiler", String(files.doc.length)],
+      ["Arkivpakke", fmtVal() + " (" + files.pkg.length + (files.pkg.length === 1 ? " fil" : " filer") + ")"]
+    ]));
+  }
+  function summaryText() {
+    var L = ["Avlevering av digitalt arkiv: " + $("sys_name").value.trim() + " [" + $("sys_id").value.trim() + "]", "Referanse: " + receiptRef, ""];
+    for (var i = 0; i < LAST; i++) {
+      L.push(STEPS[i].short.toUpperCase());
+      rows(i).forEach(function (r) { L.push("  " + r[0] + ": " + r[1].replace(/\n/g, "; ")); });
+      L.push("");
+    }
+    return L.join("\n");
+  }
+  function toast(m) { $("toast").textContent = m; }
+
+  /* ---------- wiring ---------- */
+  els.forEach(function (e) {
+    e.addEventListener(isChk(e) || e.type === "date" ? "change" : "input", function () {
+      if (e.name === "fmt") { $("fmt_other_wrap").hidden = !$("fmt_annet").checked; clearOne("fmt"); clearOne("fmt_other"); }
+      else clearOne(e.id);
+      save();
+    });
+  });
+  $("form").addEventListener("submit", function (ev) { ev.preventDefault(); });
+  $("next").addEventListener("click", next);
+  $("back").addEventListener("click", function () { if (step > 0) go(step - 1, true); });
+
+  $("copy").addEventListener("click", function () {
+    var text = summaryText(), fb = $("fallback");
+    function fallback() { fb.value = text; fb.hidden = false; fb.focus(); fb.select(); toast("Kopiering er blokkert her. Teksten er markert: trykk Ctrl+C eller Cmd+C."); }
+    try { navigator.clipboard.writeText(text).then(function () { fb.hidden = true; toast("Oppsummeringen er kopiert."); }, fallback); } catch (err) { fallback(); }
+  });
+
+  function clearAll() {
+    els.forEach(function (e) { if (isChk(e)) e.checked = false; else e.value = ""; });
+    files.doc = []; files.pkg = []; renderFiles("doc"); renderFiles("pkg");
+    $("dz_doc").querySelector(".dz-err").innerHTML = ""; $("dz_pkg").querySelector(".dz-err").innerHTML = "";
+    receiptRef = ""; reached = 0; $("fallback").hidden = true; toast("");
+    try { localStorage.removeItem(KEY); } catch (err) {}
+    go(0, true);
+  }
+  $("restart").addEventListener("click", clearAll);
+  var armTimer;
+  $("reset").addEventListener("click", function () {
+    var b = $("reset");
+    if (b.getAttribute("data-armed") !== "1") {
+      b.setAttribute("data-armed", "1"); b.textContent = "Trykk igjen for å tømme alt";
+      armTimer = setTimeout(function () { b.removeAttribute("data-armed"); b.textContent = "Tøm skjema"; }, 4000); return;
+    }
+    clearTimeout(armTimer); b.removeAttribute("data-armed"); b.textContent = "Tøm skjema"; clearAll();
+  });
+
+  load(); buildProgress(); renderFiles("doc"); renderFiles("pkg"); go(step, false);
+})();
+</script>
+
+</body></html>
