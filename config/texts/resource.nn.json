@@ -1,0 +1,334 @@
+{
+  "$schema": "https://altinn.studio/designer/app-dist/9.0.0-preview.9/schemas/json/text-resources/text-resources.schema.v1.json",
+  "language": "nn",
+  "resources": [
+    {
+      "id": "form.title",
+      "value": "Innlevering av elektronisk arkiv"
+    },
+    {
+      "id": "form.intro",
+      "value": "Fyll ut skjemaet før du sender SIP-innleveringspakka til depotet. Opplysningane her blir brukte til mottakskontroll, testing og registrering av innleveringa."
+    },
+    {
+      "id": "form.version",
+      "value": "Skjemaversjon: 2.0 Grunnlag: Kommunearkivordninga i Vestland 1.0 (2021-11-07)"
+    },
+    {
+      "id": "Arkivskapar.title",
+      "value": "Arkivskapar"
+    },
+    {
+      "id": "Arkivskapar.intro",
+      "value": "Kven har skapt arkivet, og kva rolle har dei hatt"
+    },
+    {
+      "id": "arkivskaparVal.title",
+      "value": "Kommune / fylkeskommune"
+    },
+    {
+      "id": "arkivskaparVal.description",
+      "value": "Vel arkivskapar på nivå 1. Kommunenummeret følgjer med i eksporten."
+    },
+    {
+      "id": "arkivskaparNamn.title",
+      "value": "Namn på arkivskapar"
+    },
+    {
+      "id": "eining.title",
+      "value": "Eining / seksjon / avdeling (valfri)"
+    },
+    {
+      "id": "eining.description",
+      "value": "Nivå 2, dømes «Helse og omsorg» eller «Landbrukskontoret»."
+    },
+    {
+      "id": "roller.title",
+      "value": "Roller (valfri)"
+    },
+    {
+      "id": "roller.description",
+      "value": "Dersom systemet har hatt fleire arkivskaparar: beskriv verkeperiode, kven som har vore vert for kven, og kva avgrensingar dei har hatt seg imellom."
+    },
+    {
+      "id": "Arkivet.title",
+      "value": "Arkivet"
+    },
+    {
+      "id": "Arkivet.intro",
+      "value": "Føremål, funksjonar, arkivdelar og periodisering Føremål og hovudfunksjonar er ikkje nødvendig for reine KOARK-/Noark-system, men bør fyllast ut for fagsystem."
+    },
+    {
+      "id": "foremaal.title",
+      "value": "Føremål (valfri for Noark)"
+    },
+    {
+      "id": "foremaal.description",
+      "value": "Kvifor vart arkivet skapt? Kan føremålet sporast til bestemte lover eller forskrifter? Kva blir dokumentert?"
+    },
+    {
+      "id": "hovudfunksjonar.title",
+      "value": "Hovudfunksjonar (inn/ut) (valfri for Noark)"
+    },
+    {
+      "id": "hovudfunksjonar.description",
+      "value": "Kva vart mata inn, og kva vart teke ut? Kva brev og rapportar vart laga i systemet? Overordna funksjonsskildring."
+    },
+    {
+      "id": "arkivdelar.title",
+      "value": "Arkivdelar"
+    },
+    {
+      "id": "arkivdelar.description",
+      "value": "Kva arkivdelar følgjer med? Kvar arkivdel kan periodiserast for seg."
+    },
+    {
+      "id": "datoForste.title",
+      "value": "Første registrering"
+    },
+    {
+      "id": "datoSiste.title",
+      "value": "Siste registrering"
+    },
+    {
+      "id": "periodeForre.title",
+      "value": "Periodisering – førre periode"
+    },
+    {
+      "id": "periodeDenne.title",
+      "value": "Periodisering – denne perioden"
+    },
+    {
+      "id": "System.title",
+      "value": "Systemopplysningar"
+    },
+    {
+      "id": "System.intro",
+      "value": "Systemtype, versjon og arkivform"
+    },
+    {
+      "id": "systemtype.title",
+      "value": "Systemtype"
+    },
+    {
+      "id": "noarkVersjon.title",
+      "value": "Noark-versjon"
+    },
+    {
+      "id": "noarkUnderversjon.title",
+      "value": "Underversjon (t.d. 5.0, 3.1)"
+    },
+    {
+      "id": "arkivform.title",
+      "value": "Arkivform (Noark 5)"
+    },
+    {
+      "id": "tilknytteDokument.title",
+      "value": "Tilknytte dokument følgjer med innleveringa"
+    },
+    {
+      "id": "verksemdsspesifikke.title",
+      "value": "Innleveringa inneheld verksemdsspesifikke data"
+    },
+    {
+      "id": "verksemdsspesifikkeKommentar.title",
+      "value": "Beskriv dei verksemdsspesifikke dataa"
+    },
+    {
+      "id": "Uttrekk.title",
+      "value": "Uttrekket"
+    },
+    {
+      "id": "Uttrekk.intro",
+      "value": "Kjeldesystem, format, verktøy og omfang"
+    },
+    {
+      "id": "datasystem.title",
+      "value": "Datasystem og versjon"
+    },
+    {
+      "id": "datasystem.description",
+      "value": "Namn på systemet uttrekket er henta frå, med versjonsnummer."
+    },
+    {
+      "id": "databaseplattform.title",
+      "value": "Databaseplattform og versjon (valfri)"
+    },
+    {
+      "id": "uttrekksformat.title",
+      "value": "Uttrekksformat og versjon"
+    },
+    {
+      "id": "uttrekksformat.description",
+      "value": "Døme: Noark 3 for KOARK, Noark 4, Noark 5 versjon x.y, tabelluttrekk, SIARD versjon x.y, Oracle-dumpfil, MSSQL backup, MySQL dumpfil."
+    },
+    {
+      "id": "uttrekksverktoy.title",
+      "value": "Uttrekksverktøy og versjon"
+    },
+    {
+      "id": "uttrekksverktoy.description",
+      "value": "Døme: Noark 5 uttrekksprogram, Oracle exp, MSSQL backup, Intelligent Converters Migration Toolkit, SIARD Edit, DBPTK, Arkade 5, IKAVA Systemuthent. Oppgi fleire verktøy dersom uttrekket er laga i ei produksjonslinje."
+    },
+    {
+      "id": "antPostar.title",
+      "value": "Tal på postar (valfri)"
+    },
+    {
+      "id": "antDokument.title",
+      "value": "Tal på dokument (valfri)"
+    },
+    {
+      "id": "systemdokumentasjon.title",
+      "value": "Systemdokumentasjon er vedlagt eller innsend"
+    },
+    {
+      "id": "Offentlegheit.title",
+      "value": "Offentlegheit og rettar"
+    },
+    {
+      "id": "Offentlegheit.intro",
+      "value": "Skjerming, lisensiering og merknader"
+    },
+    {
+      "id": "offentlegheit.title",
+      "value": "Offentlegheitsvurdering"
+    },
+    {
+      "id": "skjermingKommentar.title",
+      "value": "Kva er skjerma, og på kva grunnlag?"
+    },
+    {
+      "id": "rettar.title",
+      "value": "Avklaring av rettar (valfri)"
+    },
+    {
+      "id": "rettar.description",
+      "value": "Gjeld særleg arkiv som ikkje er regulerte av offentleglova. Inneheld materialet åndsverk, bør du oppgi kva lisens det skal formidlast vidare med – til dømes ein Creative Commons-lisens."
+    },
+    {
+      "id": "kommentar.title",
+      "value": "Kommentar (valfri)"
+    },
+    {
+      "id": "Pakke.title",
+      "value": "Pakkeinformasjon"
+    },
+    {
+      "id": "Pakke.intro",
+      "value": "Sjekksum og UUID for SIP-pakka"
+    },
+    {
+      "id": "sjekksum.title",
+      "value": "Sjekksum (SHA-256)"
+    },
+    {
+      "id": "sjekksum.description",
+      "value": "64 heksadesimale teikn. Sjekksummen skal validere mot info.xml."
+    },
+    {
+      "id": "uuid.title",
+      "value": "UUID"
+    },
+    {
+      "id": "uuid.description",
+      "value": "UUID type 1 er å føretrekkja, fordi identiteten til maskin og tidspunkt går fram."
+    },
+    {
+      "id": "Konvertering.title",
+      "value": "Konvertering"
+    },
+    {
+      "id": "Konvertering.intro",
+      "value": "Er data overførte frå eit anna system til dette? Dersom data frå eit tidlegare system er sette inn i systemet som blir levert inn, må ein normalt akseptera ein større grad av feil. Dette påverkar testinga, og må opplysast slik at innleveringa ikkje blir underkjend på grunn av manglar."
+    },
+    {
+      "id": "konvertering.title",
+      "value": "Er det på noko tidspunkt overført data frå eit anna datasystem til dette?"
+    },
+    {
+      "id": "konvDato.title",
+      "value": "Dato konvertert"
+    },
+    {
+      "id": "konvDato.description",
+      "value": "Siste konvertering. Ved fleire: oppgi dei i kommentarfeltet."
+    },
+    {
+      "id": "konvUtfort.title",
+      "value": "Utført av"
+    },
+    {
+      "id": "konvUtfort.description",
+      "value": "Namn på person eller firma, med avdeling."
+    },
+    {
+      "id": "konvFra.title",
+      "value": "Datasystem og versjon konvertert frå"
+    },
+    {
+      "id": "konvKommentar.title",
+      "value": "Kommentar"
+    },
+    {
+      "id": "Kassasjon.title",
+      "value": "Kassasjon"
+    },
+    {
+      "id": "Kassasjon.intro",
+      "value": "Kva er sletta, og kva skal slettast seinare Etter arkivlova § 9 kan personregister eller delar av personregister slettast etter forskriftene i personopplysningslova og helseregisterlova. Det er viktig å dokumentera kva opplysningar som er tekne ut, og kvifor. Under normale omstende gjer ikkje depotet kassasjon av innlevert materiale."
+    },
+    {
+      "id": "kassasjon.title",
+      "value": "Er kassasjon utført i materialet?"
+    },
+    {
+      "id": "kassDato.title",
+      "value": "Dato kassert (sletta)"
+    },
+    {
+      "id": "kassKva.title",
+      "value": "Kva er kassert (sletta)?"
+    },
+    {
+      "id": "kassSeinare.title",
+      "value": "Materialet inneheld dokument som skal kasserast seinare"
+    },
+    {
+      "id": "kassSeinareKommentar.title",
+      "value": "Kva skal kasserast, kvifor, og korleis er det merkt eller koda?"
+    },
+    {
+      "id": "Kontakt.title",
+      "value": "Kontaktperson og stadfesting"
+    },
+    {
+      "id": "Kontakt.intro",
+      "value": "Arkivleiar eller ansvarleg for arkivet Send inn skjemaet før SIP-innleveringspakka blir sendt til depotet til Kommunearkivordninga i Vestland."
+    },
+    {
+      "id": "kontaktNamn.title",
+      "value": "Namn"
+    },
+    {
+      "id": "kontaktRolle.title",
+      "value": "Rolle / stilling"
+    },
+    {
+      "id": "kontaktEpost.title",
+      "value": "E-post"
+    },
+    {
+      "id": "kontaktTelefon.title",
+      "value": "Telefon (valfri)"
+    },
+    {
+      "id": "stadfestProveniens.title",
+      "value": "Eg stadfestar at proveniensen til materialet, informasjonsinnhaldet og medfølgjande dokumentasjon er gyldig og korrekt."
+    },
+    {
+      "id": "stadfestSletting.title",
+      "value": "Eg er innforstått med at systemet og materialet ikkje kan slettast før innleveringa har fått status «godkjent deponert» frå Kommunearkivordninga i Vestland."
+    }
+  ]
+}

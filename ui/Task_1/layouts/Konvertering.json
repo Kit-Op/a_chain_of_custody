@@ -1,0 +1,143 @@
+{
+  "$schema": "https://altinn.studio/designer/app-dist/9.0.0-preview.9/schemas/json/layout/layout.schema.v1.json",
+  "data": {
+    "layout": [
+      {
+        "id": "Konvertering-NavigationBar",
+        "type": "NavigationBar"
+      },
+      {
+        "id": "Konvertering-Heading",
+        "type": "Heading",
+        "size": "h2",
+        "textResourceBindings": {
+          "title": "Konvertering.title"
+        }
+      },
+      {
+        "id": "Konvertering-Intro",
+        "type": "Paragraph",
+        "textResourceBindings": {
+          "title": "Konvertering.intro"
+        }
+      },
+      {
+        "id": "Konvertering-konvertering",
+        "type": "RadioButtons",
+        "textResourceBindings": {
+          "title": "konvertering.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "konvertering"
+        },
+        "required": true,
+        "options": [
+          {
+            "label": "Ja",
+            "value": "ja"
+          },
+          {
+            "label": "Nei",
+            "value": "nei"
+          },
+          {
+            "label": "Ukjent",
+            "value": "ukjent"
+          }
+        ]
+      },
+      {
+        "id": "Konvertering-konvDato",
+        "type": "Datepicker",
+        "textResourceBindings": {
+          "title": "konvDato.title",
+          "description": "konvDato.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "konvDato"
+        },
+        "hidden": [
+          "not",
+          [
+            "equals",
+            [
+              "dataModel",
+              "konvertering"
+            ],
+            "ja"
+          ]
+        ],
+        "format": "dd.MM.yyyy"
+      },
+      {
+        "id": "Konvertering-konvUtfort",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "konvUtfort.title",
+          "description": "konvUtfort.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "konvUtfort"
+        },
+        "hidden": [
+          "not",
+          [
+            "equals",
+            [
+              "dataModel",
+              "konvertering"
+            ],
+            "ja"
+          ]
+        ]
+      },
+      {
+        "id": "Konvertering-konvFra",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "konvFra.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "konvFra"
+        },
+        "hidden": [
+          "not",
+          [
+            "equals",
+            [
+              "dataModel",
+              "konvertering"
+            ],
+            "ja"
+          ]
+        ]
+      },
+      {
+        "id": "Konvertering-konvKommentar",
+        "type": "TextArea",
+        "textResourceBindings": {
+          "title": "konvKommentar.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "konvKommentar"
+        },
+        "hidden": [
+          "not",
+          [
+            "equals",
+            [
+              "dataModel",
+              "konvertering"
+            ],
+            "ja"
+          ]
+        ]
+      },
+      {
+        "id": "Konvertering-NavigationButtons",
+        "type": "NavigationButtons",
+        "textResourceBindings": {}
+      }
+    ]
+  }
+}

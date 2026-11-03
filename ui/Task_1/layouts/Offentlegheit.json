@@ -1,0 +1,99 @@
+{
+  "$schema": "https://altinn.studio/designer/app-dist/9.0.0-preview.9/schemas/json/layout/layout.schema.v1.json",
+  "data": {
+    "layout": [
+      {
+        "id": "Offentlegheit-NavigationBar",
+        "type": "NavigationBar"
+      },
+      {
+        "id": "Offentlegheit-Heading",
+        "type": "Heading",
+        "size": "h2",
+        "textResourceBindings": {
+          "title": "Offentlegheit.title"
+        }
+      },
+      {
+        "id": "Offentlegheit-Intro",
+        "type": "Paragraph",
+        "textResourceBindings": {
+          "title": "Offentlegheit.intro"
+        }
+      },
+      {
+        "id": "Offentlegheit-offentlegheit",
+        "type": "RadioButtons",
+        "textResourceBindings": {
+          "title": "offentlegheit.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "offentlegheit"
+        },
+        "required": true,
+        "options": [
+          {
+            "label": "Ope materiale Ingen delar er skjerma",
+            "value": "ope"
+          },
+          {
+            "label": "Delar er unnatekne offentlegheit Jf. offl. § 13 første ledd, jf. fvl. § 13 første ledd nr. 1",
+            "value": "skjerma"
+          },
+          {
+            "label": "Ikkje avklart Depotet tek kontakt for avklaring",
+            "value": "ukjent"
+          }
+        ]
+      },
+      {
+        "id": "Offentlegheit-skjermingKommentar",
+        "type": "TextArea",
+        "textResourceBindings": {
+          "title": "skjermingKommentar.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "skjermingKommentar"
+        },
+        "required": true,
+        "hidden": [
+          "not",
+          [
+            "equals",
+            [
+              "dataModel",
+              "offentlegheit"
+            ],
+            "skjerma"
+          ]
+        ]
+      },
+      {
+        "id": "Offentlegheit-rettar",
+        "type": "TextArea",
+        "textResourceBindings": {
+          "title": "rettar.title",
+          "description": "rettar.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "rettar"
+        }
+      },
+      {
+        "id": "Offentlegheit-kommentar",
+        "type": "TextArea",
+        "textResourceBindings": {
+          "title": "kommentar.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "kommentar"
+        }
+      },
+      {
+        "id": "Offentlegheit-NavigationButtons",
+        "type": "NavigationButtons",
+        "textResourceBindings": {}
+      }
+    ]
+  }
+}

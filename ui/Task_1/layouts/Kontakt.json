@@ -1,0 +1,108 @@
+{
+  "$schema": "https://altinn.studio/designer/app-dist/9.0.0-preview.9/schemas/json/layout/layout.schema.v1.json",
+  "data": {
+    "layout": [
+      {
+        "id": "Kontakt-NavigationBar",
+        "type": "NavigationBar"
+      },
+      {
+        "id": "Kontakt-Heading",
+        "type": "Heading",
+        "size": "h2",
+        "textResourceBindings": {
+          "title": "Kontakt.title"
+        }
+      },
+      {
+        "id": "Kontakt-Intro",
+        "type": "Paragraph",
+        "textResourceBindings": {
+          "title": "Kontakt.intro"
+        }
+      },
+      {
+        "id": "Kontakt-kontaktNamn",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "kontaktNamn.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "kontaktNamn"
+        },
+        "required": true
+      },
+      {
+        "id": "Kontakt-kontaktRolle",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "kontaktRolle.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "kontaktRolle"
+        },
+        "required": true
+      },
+      {
+        "id": "Kontakt-kontaktEpost",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "kontaktEpost.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "kontaktEpost"
+        },
+        "required": true
+      },
+      {
+        "id": "Kontakt-kontaktTelefon",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "kontaktTelefon.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "kontaktTelefon"
+        }
+      },
+      {
+        "id": "Kontakt-stadfestProveniens",
+        "type": "Checkboxes",
+        "textResourceBindings": {
+          "title": "stadfestProveniens.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "stadfestProveniens"
+        },
+        "required": true,
+        "options": [
+          {
+            "label": "Eg stadfestar at proveniensen til materialet, informasjonsinnhaldet og medfølgjande dokumentasjon er gyldig og korrekt.",
+            "value": "ja"
+          }
+        ]
+      },
+      {
+        "id": "Kontakt-stadfestSletting",
+        "type": "Checkboxes",
+        "textResourceBindings": {
+          "title": "stadfestSletting.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "stadfestSletting"
+        },
+        "required": true,
+        "options": [
+          {
+            "label": "Eg er innforstått med at systemet og materialet ikkje kan slettast før innleveringa har fått status «godkjent deponert» frå Kommunearkivordninga i Vestland.",
+            "value": "ja"
+          }
+        ]
+      },
+      {
+        "id": "Kontakt-NavigationButtons",
+        "type": "NavigationButtons",
+        "textResourceBindings": {}
+      }
+    ]
+  }
+}

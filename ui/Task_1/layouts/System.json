@@ -1,0 +1,204 @@
+{
+  "$schema": "https://altinn.studio/designer/app-dist/9.0.0-preview.9/schemas/json/layout/layout.schema.v1.json",
+  "data": {
+    "layout": [
+      {
+        "id": "System-NavigationBar",
+        "type": "NavigationBar"
+      },
+      {
+        "id": "System-Heading",
+        "type": "Heading",
+        "size": "h2",
+        "textResourceBindings": {
+          "title": "System.title"
+        }
+      },
+      {
+        "id": "System-Intro",
+        "type": "Paragraph",
+        "textResourceBindings": {
+          "title": "System.intro"
+        }
+      },
+      {
+        "id": "System-systemtype",
+        "type": "RadioButtons",
+        "textResourceBindings": {
+          "title": "systemtype.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "systemtype"
+        },
+        "required": true,
+        "options": [
+          {
+            "label": "Noark-system Sak-/arkivsystem etter Noark-standarden",
+            "value": "noark"
+          },
+          {
+            "label": "Fagsystem Ikkje-Noark system med arkivverdig innhald",
+            "value": "fagsystem"
+          }
+        ]
+      },
+      {
+        "id": "System-noarkVersjon",
+        "type": "Dropdown",
+        "textResourceBindings": {
+          "title": "noarkVersjon.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "noarkVersjon"
+        },
+        "required": true,
+        "options": [
+          {
+            "label": "Noark 3 (KOARK)",
+            "value": "3"
+          },
+          {
+            "label": "Noark 4",
+            "value": "4"
+          },
+          {
+            "label": "Noark 5",
+            "value": "5"
+          }
+        ],
+        "hidden": [
+          "not",
+          [
+            "equals",
+            [
+              "dataModel",
+              "systemtype"
+            ],
+            "noark"
+          ]
+        ]
+      },
+      {
+        "id": "System-noarkUnderversjon",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "noarkUnderversjon.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "noarkUnderversjon"
+        },
+        "hidden": [
+          "not",
+          [
+            "equals",
+            [
+              "dataModel",
+              "systemtype"
+            ],
+            "noark"
+          ]
+        ]
+      },
+      {
+        "id": "System-arkivform",
+        "type": "RadioButtons",
+        "textResourceBindings": {
+          "title": "arkivform.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "arkivform"
+        },
+        "options": [
+          {
+            "label": "Fullelektronisk system",
+            "value": "fullelektronisk"
+          },
+          {
+            "label": "Hybridarkiv Papir og elektronisk parallelt",
+            "value": "hybrid"
+          }
+        ],
+        "hidden": [
+          "not",
+          [
+            "and",
+            [
+              "equals",
+              [
+                "dataModel",
+                "systemtype"
+              ],
+              "noark"
+            ],
+            [
+              "equals",
+              [
+                "dataModel",
+                "noarkVersjon"
+              ],
+              "5"
+            ]
+          ]
+        ]
+      },
+      {
+        "id": "System-tilknytteDokument",
+        "type": "Checkboxes",
+        "textResourceBindings": {
+          "title": "tilknytteDokument.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "tilknytteDokument"
+        },
+        "options": [
+          {
+            "label": "Tilknytte dokument følgjer med innleveringa",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "System-verksemdsspesifikke",
+        "type": "Checkboxes",
+        "textResourceBindings": {
+          "title": "verksemdsspesifikke.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "verksemdsspesifikke"
+        },
+        "options": [
+          {
+            "label": "Innleveringa inneheld verksemdsspesifikke data Slike data krev særskild oppfølging i depotet",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "System-verksemdsspesifikkeKommentar",
+        "type": "TextArea",
+        "textResourceBindings": {
+          "title": "verksemdsspesifikkeKommentar.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "verksemdsspesifikkeKommentar"
+        },
+        "hidden": [
+          "not",
+          [
+            "equals",
+            [
+              "dataModel",
+              "verksemdsspesifikke"
+            ],
+            true
+          ]
+        ]
+      },
+      {
+        "id": "System-NavigationButtons",
+        "type": "NavigationButtons",
+        "textResourceBindings": {}
+      }
+    ]
+  }
+}

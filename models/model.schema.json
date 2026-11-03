@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "info": {
+    "rootNode": ""
+  },
+  "@xsdRootElement": "model",
+  "properties": {
+    "arkivskaparVal": {
+      "type": "string",
+      "enum": [
+        "4600",
+        "4601",
+        "4602",
+        "4611",
+        "4612",
+        "4613",
+        "4614",
+        "4615",
+        "4616",
+        "4617",
+        "4618",
+        "4619",
+        "4620",
+        "4621",
+        "4622",
+        "4623",
+        "4624",
+        "4625",
+        "4626",
+        "4627",
+        "4628",
+        "4629",
+        "4630",
+        "4631",
+        "4632",
+        "4633",
+        "4634",
+        "4635",
+        "4636",
+        "4637",
+        "4638",
+        "4639",
+        "4640",
+        "4641",
+        "4642",
+        "4643",
+        "4644",
+        "4645",
+        "4646",
+        "4647",
+        "4648",
+        "4649",
+        "4650",
+        "4651",
+        "annan"
+      ]
+    },
+    "arkivskaparNamn": {
+      "type": "string"
+    },
+    "eining": {
+      "type": "string"
+    },
+    "roller": {
+      "type": "string"
+    },
+    "foremaal": {
+      "type": "string"
+    },
+    "hovudfunksjonar": {
+      "type": "string"
+    },
+    "arkivdelar": {
+      "type": "string"
+    },
+    "datoForste": {
+      "type": "string",
+      "format": "date"
+    },
+    "datoSiste": {
+      "type": "string",
+      "format": "date"
+    },
+    "periodeForre": {
+      "type": "string",
+      "enum": [
+        "skarpt",
+        "mjukt",
+        "ikkje"
+      ]
+    },
+    "periodeDenne": {
+      "type": "string",
+      "enum": [
+        "skarpt",
+        "mjukt",
+        "ikkje"
+      ]
+    },
+    "systemtype": {
+      "type": "string",
+      "enum": [
+        "noark",
+        "fagsystem"
+      ]
+    },
+    "noarkVersjon": {
+      "type": "string",
+      "enum": [
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "noarkUnderversjon": {
+      "type": "string"
+    },
+    "arkivform": {
+      "type": "string",
+      "enum": [
+        "fullelektronisk",
+        "hybrid"
+      ]
+    },
+    "tilknytteDokument": {
+      "type": "boolean"
+    },
+    "verksemdsspesifikke": {
+      "type": "boolean"
+    },
+    "verksemdsspesifikkeKommentar": {
+      "type": "string"
+    },
+    "datasystem": {
+      "type": "string"
+    },
+    "databaseplattform": {
+      "type": "string"
+    },
+    "uttrekksformat": {
+      "type": "string"
+    },
+    "uttrekksverktoy": {
+      "type": "string"
+    },
+    "antPostar": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "antDokument": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "systemdokumentasjon": {
+      "type": "boolean"
+    },
+    "offentlegheit": {
+      "type": "string",
+      "enum": [
+        "ope",
+        "skjerma",
+        "ukjent"
+      ]
+    },
+    "skjermingKommentar": {
+      "type": "string"
+    },
+    "rettar": {
+      "type": "string"
+    },
+    "kommentar": {
+      "type": "string"
+    },
+    "sjekksum": {
+      "type": "string",
+      "pattern": "[0-9a-fA-F]{64}",
+      "minLength": 64,
+      "maxLength": 64
+    },
+    "uuid": {
+      "type": "string",
+      "pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+      "minLength": 36,
+      "maxLength": 36
+    },
+    "konvertering": {
+      "type": "string",
+      "enum": [
+        "ja",
+        "nei",
+        "ukjent"
+      ]
+    },
+    "konvDato": {
+      "type": "string",
+      "format": "date"
+    },
+    "konvUtfort": {
+      "type": "string"
+    },
+    "konvFra": {
+      "type": "string"
+    },
+    "konvKommentar": {
+      "type": "string"
+    },
+    "kassasjon": {
+      "type": "string",
+      "enum": [
+        "ja",
+        "nei"
+      ]
+    },
+    "kassDato": {
+      "type": "string",
+      "format": "date"
+    },
+    "kassKva": {
+      "type": "string"
+    },
+    "kassSeinare": {
+      "type": "boolean"
+    },
+    "kassSeinareKommentar": {
+      "type": "string"
+    },
+    "kontaktNamn": {
+      "type": "string"
+    },
+    "kontaktRolle": {
+      "type": "string"
+    },
+    "kontaktEpost": {
+      "type": "string",
+      "pattern": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[.][A-Za-z]{2,}"
+    },
+    "kontaktTelefon": {
+      "type": "string"
+    },
+    "stadfestProveniens": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "ja"
+        ]
+      }
+    },
+    "stadfestSletting": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "ja"
+        ]
+      }
+    }
+  },
+  "required": []
+}

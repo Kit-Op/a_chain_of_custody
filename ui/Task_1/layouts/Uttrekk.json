@@ -1,0 +1,113 @@
+{
+  "$schema": "https://altinn.studio/designer/app-dist/9.0.0-preview.9/schemas/json/layout/layout.schema.v1.json",
+  "data": {
+    "layout": [
+      {
+        "id": "Uttrekk-NavigationBar",
+        "type": "NavigationBar"
+      },
+      {
+        "id": "Uttrekk-Heading",
+        "type": "Heading",
+        "size": "h2",
+        "textResourceBindings": {
+          "title": "Uttrekk.title"
+        }
+      },
+      {
+        "id": "Uttrekk-Intro",
+        "type": "Paragraph",
+        "textResourceBindings": {
+          "title": "Uttrekk.intro"
+        }
+      },
+      {
+        "id": "Uttrekk-datasystem",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "datasystem.title",
+          "description": "datasystem.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "datasystem"
+        },
+        "required": true
+      },
+      {
+        "id": "Uttrekk-databaseplattform",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "databaseplattform.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "databaseplattform"
+        }
+      },
+      {
+        "id": "Uttrekk-uttrekksformat",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "uttrekksformat.title",
+          "description": "uttrekksformat.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "uttrekksformat"
+        },
+        "required": true
+      },
+      {
+        "id": "Uttrekk-uttrekksverktoy",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "uttrekksverktoy.title",
+          "description": "uttrekksverktoy.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "uttrekksverktoy"
+        },
+        "required": true
+      },
+      {
+        "id": "Uttrekk-antPostar",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "antPostar.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "antPostar"
+        }
+      },
+      {
+        "id": "Uttrekk-antDokument",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "antDokument.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "antDokument"
+        }
+      },
+      {
+        "id": "Uttrekk-systemdokumentasjon",
+        "type": "Checkboxes",
+        "textResourceBindings": {
+          "title": "systemdokumentasjon.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "systemdokumentasjon"
+        },
+        "options": [
+          {
+            "label": "Systemdokumentasjon er vedlagt eller innsend System- og driftshandbøker, eventuelt brukarhandbøker",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "Uttrekk-NavigationButtons",
+        "type": "NavigationButtons",
+        "textResourceBindings": {}
+      }
+    ]
+  }
+}

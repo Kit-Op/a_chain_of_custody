@@ -1,0 +1,141 @@
+{
+  "$schema": "https://altinn.studio/designer/app-dist/9.0.0-preview.9/schemas/json/layout/layout.schema.v1.json",
+  "data": {
+    "layout": [
+      {
+        "id": "Arkivet-NavigationBar",
+        "type": "NavigationBar"
+      },
+      {
+        "id": "Arkivet-Heading",
+        "type": "Heading",
+        "size": "h2",
+        "textResourceBindings": {
+          "title": "Arkivet.title"
+        }
+      },
+      {
+        "id": "Arkivet-Intro",
+        "type": "Paragraph",
+        "textResourceBindings": {
+          "title": "Arkivet.intro"
+        }
+      },
+      {
+        "id": "Arkivet-foremaal",
+        "type": "TextArea",
+        "textResourceBindings": {
+          "title": "foremaal.title",
+          "description": "foremaal.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "foremaal"
+        }
+      },
+      {
+        "id": "Arkivet-hovudfunksjonar",
+        "type": "TextArea",
+        "textResourceBindings": {
+          "title": "hovudfunksjonar.title",
+          "description": "hovudfunksjonar.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "hovudfunksjonar"
+        }
+      },
+      {
+        "id": "Arkivet-arkivdelar",
+        "type": "TextArea",
+        "textResourceBindings": {
+          "title": "arkivdelar.title",
+          "description": "arkivdelar.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "arkivdelar"
+        },
+        "required": true
+      },
+      {
+        "id": "Arkivet-datoForste",
+        "type": "Datepicker",
+        "textResourceBindings": {
+          "title": "datoForste.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "datoForste"
+        },
+        "required": true,
+        "format": "dd.MM.yyyy"
+      },
+      {
+        "id": "Arkivet-datoSiste",
+        "type": "Datepicker",
+        "textResourceBindings": {
+          "title": "datoSiste.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "datoSiste"
+        },
+        "required": true,
+        "format": "dd.MM.yyyy",
+        "minDate": [
+          "dataModel",
+          "datoForste"
+        ]
+      },
+      {
+        "id": "Arkivet-periodeForre",
+        "type": "RadioButtons",
+        "textResourceBindings": {
+          "title": "periodeForre.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "periodeForre"
+        },
+        "options": [
+          {
+            "label": "Skarpt skilje",
+            "value": "skarpt"
+          },
+          {
+            "label": "Mjukt skilje",
+            "value": "mjukt"
+          },
+          {
+            "label": "Ikkje aktuelt",
+            "value": "ikkje"
+          }
+        ]
+      },
+      {
+        "id": "Arkivet-periodeDenne",
+        "type": "RadioButtons",
+        "textResourceBindings": {
+          "title": "periodeDenne.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "periodeDenne"
+        },
+        "options": [
+          {
+            "label": "Skarpt skilje",
+            "value": "skarpt"
+          },
+          {
+            "label": "Mjukt skilje",
+            "value": "mjukt"
+          },
+          {
+            "label": "Ikkje aktuelt",
+            "value": "ikkje"
+          }
+        ]
+      },
+      {
+        "id": "Arkivet-NavigationButtons",
+        "type": "NavigationButtons",
+        "textResourceBindings": {}
+      }
+    ]
+  }
+}

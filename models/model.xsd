@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="model">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="arkivskaparVal" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="4600"/>
+              <xs:enumeration value="4601"/>
+              <xs:enumeration value="4602"/>
+              <xs:enumeration value="4611"/>
+              <xs:enumeration value="4612"/>
+              <xs:enumeration value="4613"/>
+              <xs:enumeration value="4614"/>
+              <xs:enumeration value="4615"/>
+              <xs:enumeration value="4616"/>
+              <xs:enumeration value="4617"/>
+              <xs:enumeration value="4618"/>
+              <xs:enumeration value="4619"/>
+              <xs:enumeration value="4620"/>
+              <xs:enumeration value="4621"/>
+              <xs:enumeration value="4622"/>
+              <xs:enumeration value="4623"/>
+              <xs:enumeration value="4624"/>
+              <xs:enumeration value="4625"/>
+              <xs:enumeration value="4626"/>
+              <xs:enumeration value="4627"/>
+              <xs:enumeration value="4628"/>
+              <xs:enumeration value="4629"/>
+              <xs:enumeration value="4630"/>
+              <xs:enumeration value="4631"/>
+              <xs:enumeration value="4632"/>
+              <xs:enumeration value="4633"/>
+              <xs:enumeration value="4634"/>
+              <xs:enumeration value="4635"/>
+              <xs:enumeration value="4636"/>
+              <xs:enumeration value="4637"/>
+              <xs:enumeration value="4638"/>
+              <xs:enumeration value="4639"/>
+              <xs:enumeration value="4640"/>
+              <xs:enumeration value="4641"/>
+              <xs:enumeration value="4642"/>
+              <xs:enumeration value="4643"/>
+              <xs:enumeration value="4644"/>
+              <xs:enumeration value="4645"/>
+              <xs:enumeration value="4646"/>
+              <xs:enumeration value="4647"/>
+              <xs:enumeration value="4648"/>
+              <xs:enumeration value="4649"/>
+              <xs:enumeration value="4650"/>
+              <xs:enumeration value="4651"/>
+              <xs:enumeration value="annan"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="arkivskaparNamn" type="xs:string" minOccurs="0"/>
+        <xs:element name="eining" type="xs:string" minOccurs="0"/>
+        <xs:element name="roller" type="xs:string" minOccurs="0"/>
+        <xs:element name="foremaal" type="xs:string" minOccurs="0"/>
+        <xs:element name="hovudfunksjonar" type="xs:string" minOccurs="0"/>
+        <xs:element name="arkivdelar" type="xs:string" minOccurs="0"/>
+        <xs:element name="datoForste" type="xs:date" minOccurs="0"/>
+        <xs:element name="datoSiste" type="xs:date" minOccurs="0"/>
+        <xs:element name="periodeForre" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="skarpt"/>
+              <xs:enumeration value="mjukt"/>
+              <xs:enumeration value="ikkje"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="periodeDenne" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="skarpt"/>
+              <xs:enumeration value="mjukt"/>
+              <xs:enumeration value="ikkje"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="systemtype" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="noark"/>
+              <xs:enumeration value="fagsystem"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="noarkVersjon" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="3"/>
+              <xs:enumeration value="4"/>
+              <xs:enumeration value="5"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="noarkUnderversjon" type="xs:string" minOccurs="0"/>
+        <xs:element name="arkivform" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="fullelektronisk"/>
+              <xs:enumeration value="hybrid"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="tilknytteDokument" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="verksemdsspesifikke" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="verksemdsspesifikkeKommentar" type="xs:string" minOccurs="0"/>
+        <xs:element name="datasystem" type="xs:string" minOccurs="0"/>
+        <xs:element name="databaseplattform" type="xs:string" minOccurs="0"/>
+        <xs:element name="uttrekksformat" type="xs:string" minOccurs="0"/>
+        <xs:element name="uttrekksverktoy" type="xs:string" minOccurs="0"/>
+        <xs:element name="antPostar" type="xs:nonNegativeInteger" minOccurs="0"/>
+        <xs:element name="antDokument" type="xs:nonNegativeInteger" minOccurs="0"/>
+        <xs:element name="systemdokumentasjon" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="offentlegheit" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="ope"/>
+              <xs:enumeration value="skjerma"/>
+              <xs:enumeration value="ukjent"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="skjermingKommentar" type="xs:string" minOccurs="0"/>
+        <xs:element name="rettar" type="xs:string" minOccurs="0"/>
+        <xs:element name="kommentar" type="xs:string" minOccurs="0"/>
+        <xs:element name="sjekksum" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:length value="64"/>
+              <xs:pattern value="[0-9a-fA-F]{64}"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="uuid" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:length value="36"/>
+              <xs:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="konvertering" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="ja"/>
+              <xs:enumeration value="nei"/>
+              <xs:enumeration value="ukjent"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="konvDato" type="xs:date" minOccurs="0"/>
+        <xs:element name="konvUtfort" type="xs:string" minOccurs="0"/>
+        <xs:element name="konvFra" type="xs:string" minOccurs="0"/>
+        <xs:element name="konvKommentar" type="xs:string" minOccurs="0"/>
+        <xs:element name="kassasjon" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="ja"/>
+              <xs:enumeration value="nei"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="kassDato" type="xs:date" minOccurs="0"/>
+        <xs:element name="kassKva" type="xs:string" minOccurs="0"/>
+        <xs:element name="kassSeinare" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="kassSeinareKommentar" type="xs:string" minOccurs="0"/>
+        <xs:element name="kontaktNamn" type="xs:string" minOccurs="0"/>
+        <xs:element name="kontaktRolle" type="xs:string" minOccurs="0"/>
+        <xs:element name="kontaktEpost" minOccurs="0">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:pattern value="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[.][A-Za-z]{2,}"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="kontaktTelefon" type="xs:string" minOccurs="0"/>
+        <xs:element name="stadfestProveniens" minOccurs="0" maxOccurs="unbounded">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="ja"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="stadfestSletting" minOccurs="0" maxOccurs="unbounded">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="ja"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

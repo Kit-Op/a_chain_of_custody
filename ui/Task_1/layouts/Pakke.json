@@ -1,0 +1,55 @@
+{
+  "$schema": "https://altinn.studio/designer/app-dist/9.0.0-preview.9/schemas/json/layout/layout.schema.v1.json",
+  "data": {
+    "layout": [
+      {
+        "id": "Pakke-NavigationBar",
+        "type": "NavigationBar"
+      },
+      {
+        "id": "Pakke-Heading",
+        "type": "Heading",
+        "size": "h2",
+        "textResourceBindings": {
+          "title": "Pakke.title"
+        }
+      },
+      {
+        "id": "Pakke-Intro",
+        "type": "Paragraph",
+        "textResourceBindings": {
+          "title": "Pakke.intro"
+        }
+      },
+      {
+        "id": "Pakke-sjekksum",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "sjekksum.title",
+          "description": "sjekksum.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "sjekksum"
+        },
+        "required": true
+      },
+      {
+        "id": "Pakke-uuid",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "uuid.title",
+          "description": "uuid.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "uuid"
+        },
+        "required": true
+      },
+      {
+        "id": "Pakke-NavigationButtons",
+        "type": "NavigationButtons",
+        "textResourceBindings": {}
+      }
+    ]
+  }
+}

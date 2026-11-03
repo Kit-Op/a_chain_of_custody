@@ -1,0 +1,291 @@
+{
+  "$schema": "https://altinn.studio/designer/app-dist/9.0.0-preview.9/schemas/json/layout/layout.schema.v1.json",
+  "data": {
+    "layout": [
+      {
+        "id": "Arkivskapar-NavigationBar",
+        "type": "NavigationBar"
+      },
+      {
+        "id": "FormTitle",
+        "type": "Heading",
+        "size": "h2",
+        "textResourceBindings": {
+          "title": "form.title"
+        }
+      },
+      {
+        "id": "FormIntro",
+        "type": "Paragraph",
+        "textResourceBindings": {
+          "title": "form.intro"
+        }
+      },
+      {
+        "id": "FormVersion",
+        "type": "Paragraph",
+        "textResourceBindings": {
+          "title": "form.version"
+        }
+      },
+      {
+        "id": "Arkivskapar-Heading",
+        "type": "Heading",
+        "size": "h3",
+        "textResourceBindings": {
+          "title": "Arkivskapar.title"
+        }
+      },
+      {
+        "id": "Arkivskapar-Intro",
+        "type": "Paragraph",
+        "textResourceBindings": {
+          "title": "Arkivskapar.intro"
+        }
+      },
+      {
+        "id": "Arkivskapar-arkivskaparVal",
+        "type": "Dropdown",
+        "textResourceBindings": {
+          "title": "arkivskaparVal.title",
+          "description": "arkivskaparVal.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "arkivskaparVal"
+        },
+        "required": true,
+        "options": [
+          {
+            "label": "4600 Vestland fylkeskommune",
+            "value": "4600"
+          },
+          {
+            "label": "4601 Bergen",
+            "value": "4601"
+          },
+          {
+            "label": "4602 Kinn",
+            "value": "4602"
+          },
+          {
+            "label": "4611 Etne",
+            "value": "4611"
+          },
+          {
+            "label": "4612 Sveio",
+            "value": "4612"
+          },
+          {
+            "label": "4613 Bømlo",
+            "value": "4613"
+          },
+          {
+            "label": "4614 Stord",
+            "value": "4614"
+          },
+          {
+            "label": "4615 Fitjar",
+            "value": "4615"
+          },
+          {
+            "label": "4616 Tysnes",
+            "value": "4616"
+          },
+          {
+            "label": "4617 Kvinnherad",
+            "value": "4617"
+          },
+          {
+            "label": "4618 Ullensvang",
+            "value": "4618"
+          },
+          {
+            "label": "4619 Eidfjord",
+            "value": "4619"
+          },
+          {
+            "label": "4620 Ulvik",
+            "value": "4620"
+          },
+          {
+            "label": "4621 Voss",
+            "value": "4621"
+          },
+          {
+            "label": "4622 Kvam",
+            "value": "4622"
+          },
+          {
+            "label": "4623 Samnanger",
+            "value": "4623"
+          },
+          {
+            "label": "4624 Bjørnafjorden",
+            "value": "4624"
+          },
+          {
+            "label": "4625 Austevoll",
+            "value": "4625"
+          },
+          {
+            "label": "4626 Øygarden",
+            "value": "4626"
+          },
+          {
+            "label": "4627 Askøy",
+            "value": "4627"
+          },
+          {
+            "label": "4628 Vaksdal",
+            "value": "4628"
+          },
+          {
+            "label": "4629 Modalen",
+            "value": "4629"
+          },
+          {
+            "label": "4630 Osterøy",
+            "value": "4630"
+          },
+          {
+            "label": "4631 Alver",
+            "value": "4631"
+          },
+          {
+            "label": "4632 Austrheim",
+            "value": "4632"
+          },
+          {
+            "label": "4633 Fedje",
+            "value": "4633"
+          },
+          {
+            "label": "4634 Masfjorden",
+            "value": "4634"
+          },
+          {
+            "label": "4635 Gulen",
+            "value": "4635"
+          },
+          {
+            "label": "4636 Solund",
+            "value": "4636"
+          },
+          {
+            "label": "4637 Hyllestad",
+            "value": "4637"
+          },
+          {
+            "label": "4638 Høyanger",
+            "value": "4638"
+          },
+          {
+            "label": "4639 Vik",
+            "value": "4639"
+          },
+          {
+            "label": "4640 Sogndal",
+            "value": "4640"
+          },
+          {
+            "label": "4641 Aurland",
+            "value": "4641"
+          },
+          {
+            "label": "4642 Lærdal",
+            "value": "4642"
+          },
+          {
+            "label": "4643 Årdal",
+            "value": "4643"
+          },
+          {
+            "label": "4644 Luster",
+            "value": "4644"
+          },
+          {
+            "label": "4645 Askvoll",
+            "value": "4645"
+          },
+          {
+            "label": "4646 Fjaler",
+            "value": "4646"
+          },
+          {
+            "label": "4647 Sunnfjord",
+            "value": "4647"
+          },
+          {
+            "label": "4648 Bremanger",
+            "value": "4648"
+          },
+          {
+            "label": "4649 Stad",
+            "value": "4649"
+          },
+          {
+            "label": "4650 Gloppen",
+            "value": "4650"
+          },
+          {
+            "label": "4651 Stryn",
+            "value": "4651"
+          },
+          {
+            "label": "Annan arkivskapar (verksemd, foreining, privatarkiv)",
+            "value": "annan"
+          }
+        ]
+      },
+      {
+        "id": "Arkivskapar-arkivskaparNamn",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "arkivskaparNamn.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "arkivskaparNamn"
+        },
+        "required": true,
+        "hidden": [
+          "not",
+          [
+            "equals",
+            [
+              "dataModel",
+              "arkivskaparVal"
+            ],
+            "annan"
+          ]
+        ]
+      },
+      {
+        "id": "Arkivskapar-eining",
+        "type": "Input",
+        "textResourceBindings": {
+          "title": "eining.title",
+          "description": "eining.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "eining"
+        }
+      },
+      {
+        "id": "Arkivskapar-roller",
+        "type": "TextArea",
+        "textResourceBindings": {
+          "title": "roller.title",
+          "description": "roller.description"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "roller"
+        }
+      },
+      {
+        "id": "Arkivskapar-NavigationButtons",
+        "type": "NavigationButtons",
+        "textResourceBindings": {}
+      }
+    ]
+  }
+}

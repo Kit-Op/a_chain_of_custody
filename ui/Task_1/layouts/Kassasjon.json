@@ -1,0 +1,132 @@
+{
+  "$schema": "https://altinn.studio/designer/app-dist/9.0.0-preview.9/schemas/json/layout/layout.schema.v1.json",
+  "data": {
+    "layout": [
+      {
+        "id": "Kassasjon-NavigationBar",
+        "type": "NavigationBar"
+      },
+      {
+        "id": "Kassasjon-Heading",
+        "type": "Heading",
+        "size": "h2",
+        "textResourceBindings": {
+          "title": "Kassasjon.title"
+        }
+      },
+      {
+        "id": "Kassasjon-Intro",
+        "type": "Paragraph",
+        "textResourceBindings": {
+          "title": "Kassasjon.intro"
+        }
+      },
+      {
+        "id": "Kassasjon-kassasjon",
+        "type": "RadioButtons",
+        "textResourceBindings": {
+          "title": "kassasjon.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "kassasjon"
+        },
+        "required": true,
+        "options": [
+          {
+            "label": "Ja",
+            "value": "ja"
+          },
+          {
+            "label": "Nei",
+            "value": "nei"
+          }
+        ]
+      },
+      {
+        "id": "Kassasjon-kassDato",
+        "type": "Datepicker",
+        "textResourceBindings": {
+          "title": "kassDato.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "kassDato"
+        },
+        "hidden": [
+          "not",
+          [
+            "equals",
+            [
+              "dataModel",
+              "kassasjon"
+            ],
+            "ja"
+          ]
+        ],
+        "format": "dd.MM.yyyy"
+      },
+      {
+        "id": "Kassasjon-kassKva",
+        "type": "TextArea",
+        "textResourceBindings": {
+          "title": "kassKva.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "kassKva"
+        },
+        "hidden": [
+          "not",
+          [
+            "equals",
+            [
+              "dataModel",
+              "kassasjon"
+            ],
+            "ja"
+          ]
+        ]
+      },
+      {
+        "id": "Kassasjon-kassSeinare",
+        "type": "Checkboxes",
+        "textResourceBindings": {
+          "title": "kassSeinare.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "kassSeinare"
+        },
+        "options": [
+          {
+            "label": "Materialet inneheld dokument som skal kasserast seinare",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": "Kassasjon-kassSeinareKommentar",
+        "type": "TextArea",
+        "textResourceBindings": {
+          "title": "kassSeinareKommentar.title"
+        },
+        "dataModelBindings": {
+          "simpleBinding": "kassSeinareKommentar"
+        },
+        "hidden": [
+          "not",
+          [
+            "equals",
+            [
+              "dataModel",
+              "kassSeinare"
+            ],
+            true
+          ]
+        ]
+      },
+      {
+        "id": "Kassasjon-NavigationButtons",
+        "type": "NavigationButtons",
+        "textResourceBindings": {}
+      }
+    ]
+  }
+}
